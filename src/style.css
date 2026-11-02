@@ -132,3 +132,5 @@ input,textarea,select{font-size:16px!important;-webkit-text-size-adjust:100%}
 .round{min-width:35px;min-height:35px}
 @keyframes toast-in{from{opacity:0;transform:translate(-50%,13px)}to{opacity:1;transform:translate(-50%,0)}}
 @media(prefers-reduced-motion:reduce){.cart-toast{animation:none}}
+
+.demo-order-tag{margin-top:13px;padding:10px 12px;background:rgba(232,197,130,.065);border:1px solid rgba(232,197,130,.16);color:#d9c59e;font-size:10px;line-height:1.6;border-radius:9px}
