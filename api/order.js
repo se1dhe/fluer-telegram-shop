@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import {validate,telegram,requireMethod} from './_lib.js';
-const prices={rose:1890,peony:2450,tulip:1590,lilac:2190};
+const prices={rose:1890,peony:2450,tulip:1590,lilac:2190,ivory:2650,redcream:2890,fuchsia:2390,eustoma:1890};
 const clean=(v,n=160)=>typeof v==='string'?v.trim().slice(0,n):'';
 export default async function handler(req,res){
  if(!requireMethod(req,res))return;
