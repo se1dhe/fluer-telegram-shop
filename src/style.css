@@ -119,3 +119,16 @@ nav span{font-size:9px;font-weight:700;letter-spacing:.05px}
 @supports(padding:max(0px)){.overlay{padding-bottom:max(170px,env(safe-area-inset-bottom))}}
 
 .release-info{margin:16px 2px 24px;color:var(--muted);font:500 10px/1.8 ui-monospace,SFMono-Regular,monospace;letter-spacing:.4px;overflow-wrap:anywhere;text-align:center}
+
+/* Input zoom fix for iOS WKWebView: 16px minimum without disabling pinch-zoom */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+input,textarea,select{font-size:16px!important;-webkit-text-size-adjust:100%}
+.search input,.field input,.field textarea,.field select{font-size:16px!important}
+.cart-toast{position:fixed;z-index:25;left:50%;bottom:calc(91px + env(safe-area-inset-bottom));transform:translateX(-50%);width:calc(100% - 30px);max-width:680px;background:#292D32;border:1px solid rgba(232,197,130,.55);border-radius:15px;box-shadow:0 12px 40px #0008;padding:12px 12px 12px 15px;display:flex;justify-content:space-between;align-items:center;gap:10px;animation:toast-in .2s ease-out}
+.cart-toast>div{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:650;line-height:1.35;min-width:0}
+.cart-toast>div svg{color:#E8C582;flex-shrink:0}
+.cart-toast>button{font-size:11px;font-weight:800;display:flex;align-items:center;gap:2px;background:#E8C582;color:#15171A;border-radius:9px;min-height:40px;padding:10px;white-space:nowrap;flex-shrink:0}
+.plus-count{font-size:12px;font-weight:900;color:#E8C582}
+.round{min-width:35px;min-height:35px}
+@keyframes toast-in{from{opacity:0;transform:translate(-50%,13px)}to{opacity:1;transform:translate(-50%,0)}}
+@media(prefers-reduced-motion:reduce){.cart-toast{animation:none}}
