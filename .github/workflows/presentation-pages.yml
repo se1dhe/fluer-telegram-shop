@@ -1,10 +1,5 @@
 name: Publish FLEUR presentation on GitHub Pages
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'public/fleur/**'
-      - '.github/workflows/presentation-pages.yml'
   workflow_dispatch:
 permissions:
   contents: read
