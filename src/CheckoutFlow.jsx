@@ -30,6 +30,7 @@ export default function CheckoutFlow({sum,cart,products,tg,onCancel,onComplete})
  return ''};
  const next=()=>{const message=validate();if(message){setErr(message);tg?.HapticFeedback?.notificationOccurred?.('error');return}setStep(v=>Math.min(4,v+1))};
  const back=()=>{if(paymentOpen){setPaymentOpen(false);return}if(step===1){onCancel();return}setStep(v=>v-1)};
+ useEffect(()=>{const handler=()=>back();try{tg?.BackButton?.show();tg?.BackButton?.onClick(handler)}catch{}return()=>{try{tg?.BackButton?.offClick(handler)}catch{}}},[step,paymentOpen,tg,onCancel]);
  const submitDemo=()=>{if(complete)return;setComplete(true);
  const order={id:'DEMO-'+Math.random().toString(36).slice(2,8).toUpperCase(),total,baseTotal:sum,deliveryFee:fee,method:data.payment,methodName:methods[data.payment],kind:data.kind,date:new Date().toISOString(),deliveryDate:data.date,time:data.slot,items:Object.fromEntries(Object.entries(cart)),status:'demo',localOnly:true};
  try{tg?.HapticFeedback?.notificationOccurred?.('success')}catch{}
