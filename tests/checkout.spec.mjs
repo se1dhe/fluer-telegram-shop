@@ -6,14 +6,14 @@ test('product add button immediately confirms shopping cart', async ({ page }) =
   await page.goto(process.env.BASE_URL || 'https://fluer-telegram-shop.vercel.app', { waitUntil: 'networkidle' });
   await page.getByRole('button', { name: /Додати .* до кошика/i }).first().click();
   await expect(page.getByRole('status')).toContainText('додано до кошика');
-  await page.getByRole('button', { name: /До кошика/i }).click();
+  await page.getByRole('button', { name: 'До кошика', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Ваш вибір' })).toBeVisible();
 });
 
 test('four-step demo order completes without bank data or charges', async ({ page }) => {
   await page.goto(process.env.BASE_URL || 'https://fluer-telegram-shop.vercel.app', { waitUntil: 'networkidle' });
   await page.getByRole('button', { name: /Додати .* до кошика/i }).first().click();
-  await page.getByRole('button', { name: /До кошика/i }).click();
+  await page.getByRole('button', { name: 'До кошика', exact: true }).click();
   await page.getByRole('button', { name: /Оформити замовлення/i }).click();
   await expect(page.getByText('Крок 1 із 4')).toBeVisible();
   await page.getByPlaceholder('Як до вас звертатися').fill('Тестовий покупець');
@@ -40,7 +40,7 @@ test('four-step demo order completes without bank data or charges', async ({ pag
 test('phone inputs use safe iOS font sizing and autocomplete', async ({ page }) => {
   await page.goto(process.env.BASE_URL || 'https://fluer-telegram-shop.vercel.app');
   await page.getByRole('button', { name: /Додати .* до кошика/i }).first().click();
-  await page.getByRole('button', { name: /До кошика/i }).click();
+  await page.getByRole('button', { name: 'До кошика', exact: true }).click();
   await page.getByRole('button', { name: /Оформити замовлення/i }).click();
   const phone = page.getByPlaceholder('+380 XX XXX XX XX');
   await expect(phone).toHaveAttribute('autocomplete', 'tel');
