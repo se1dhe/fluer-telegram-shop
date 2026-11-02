@@ -114,3 +114,6 @@ nav span{font-size:9px;font-weight:700;letter-spacing:.05px}
 @media(max-width:380px){.hero h1{font-size:32px}.hero>div{padding-left:18px}.pd h3{font-size:16px}.product .pd{padding:11px 10px}.section h2{font-size:26px}.hero>img{width:58%}}
 @media(min-width:560px){.hero{min-height:375px}.photo{aspect-ratio:4/4.4}}
 @media(prefers-reduced-motion:reduce){button,.photo img{transition:none!important}}
+
+.photo-disclosure{margin:0 0 18px!important;font-size:11px!important;line-height:1.55;color:var(--muted)!important;letter-spacing:.1px}
+@supports(padding:max(0px)){.overlay{padding-bottom:max(170px,env(safe-area-inset-bottom))}}
