@@ -1,36 +1,85 @@
-# FLEUR — Telegram Mini App для доставки квітів
+# FLEUR / Shortcast Edition
 
-Demo-first storefront for Dnipro and nearby towns. Responsive Ukrainian-language catalog, cart, recipient form, delivery time selection and Telegram test-order notification.
+**Telegram Mini App для квіткових магазинів України.** Мобільний демо-каталог, кошик і тестова доставка по Дніпру та передмістю.
 
-**Status:** TEST ONLY — no payment, shipping fulfillment, stock control, database or guaranteed delivery. Prices and product images are placeholders. Never use this demo to process real payments.
+[Відкрити демо](https://fluer-telegram-shop.vercel.app) · [Репозиторій](https://github.com/se1dhe/fluer-telegram-shop)
 
-## Architecture
-- `index.html`: mobile storefront, Telegram WebApp SDK, cart and checkout.
-- `api/order.js`: validates Telegram signed initData, recomputes prices on server and notifies admin chat.
-- `api/webhook.js`: handles Telegram `/start` commands; guarded by webhook secret header.
-- `api/health.js`: diagnostic endpoint.
-- `api/_lib.js`: Telegram authentication and API helpers.
-- Deployment: GitHub main → Vercel production.
+> ДЕМО: ціни є умовними. Реальні оплати, доставка, склад, CRM та адміністрування магазином не підключені.
 
-## Setup
-1. Revoke any bot token pasted in chat via @BotFather and generate a new one.
-2. In Vercel project environment variables (Production), set:
-   - `BOT_TOKEN`: rotated Telegram bot token (secret)
-   - `ADMIN_CHAT_ID`: numeric chat ID to receive test orders; bot needs permission to send messages there
-   - `TELEGRAM_WEBHOOK_SECRET`: cryptographically random 32+ character string
-   - `PUBLIC_APP_URL`: final deployed HTTPS URL
-3. Redeploy production to apply variables.
-4. Set webhook with Telegram Bot API `setWebhook`, using `https://YOUR_DOMAIN/api/webhook` and `secret_token` matching `TELEGRAM_WEBHOOK_SECRET`.
-5. In BotFather, assign Mini App URL (Menu Button), or open the bot and send `/start`.
-6. Test `/api/health`, `/start`, storefront cart and Telegram-initiated checkout. A regular browser lacks Telegram initData, so sending orders from a standard browser is intentionally rejected.
+## Візуальний стиль: перевірене джерело
 
-## Safety
-- API validates Telegram HMAC and auth_date, and does not trust client-submitted prices.
-- Webhook checks Telegram secret-token header.
-- No tokens or personal customer details belong in Git history.
-- The demo currently sends customer name, phone and address to the configured admin Telegram chat. Only test with consent.
-- Orders are not persisted in a server database; repeated submissions can trigger duplicate admin notifications.
-- Before launch: database, idempotency, rate limits, proper bot setup, consent/privacy documentation, delivery rules, real catalog management, admin interface, payment integration and stock reservations.
+Дизайн навмисно відштовхується від **Shortcast** у [se1dhe/shortcuts](https://github.com/se1dhe/shortcuts), а не від абстрактних «преміум»-шаблонів.
 
-## Demo limitations
-No real delivery fee is calculated for outskirts. Checkout explicitly calls the request a test; success means Telegram sent a notification to the configured admin only, not that an order was fulfilled.
+Оригінал: `Shortcast/Views/StudioTheme.swift`
+
+| Токен | Значення | Використання |
+|---|---|---|
+| Background | `#101216` | фон застосунку |
+| Panel | `#191C22` | панелі, нижня навігація |
+| Raised | `#22262E` | натискання, контролери |
+| Accent | `#E8C582` | кнопки та акценти |
+| Muted | `#9299A6` | підписи |
+| Line | `rgba(255,255,255,.08)` | делікатні роздільники |
+
+Дизайн адаптований під **мобільні WebView Telegram**: 5 вкладок, сейф-зони, BackButton, HapticFeedback, компактна навігація, контрастні кнопки та каталог 2 в ряд.
+
+## Справжні букети й оброблені фото
+
+У `public/catalog/` — **8 окремих композицій та 16 оптимізованих WebP**:
+- `burgundy-chrysanthemum` — бордові й білі хризантеми.
+- `lime-chrysanthemum` — білі хризантеми у лаймовому пакуванні.
+- `rainbow-chrysanthemum` — різнокольорові хризантеми.
+- `red-roses-pink` — червоні троянди у рожевому пакуванні.
+- `ivory-roses` — кремово-лаймові троянди.
+- `red-roses-cream` — червоні троянди у світлому пакуванні.
+- `fuchsia-roses` — рожево-фуксієві троянди.
+- `pink-lisianthus` — рожеві еустоми.
+
+У кожного товару два типи зображення:
+1. `slug.webp` — оброблена **студійна AI-assisted візуалізація на основі реального фото** (може відрізнятися у деталях від фактичного букета).
+2. `slug-real.webp` — **фотографія справжнього букета**, лише кадрування, колір і легка різкість, без генеративної зміни його вмісту.
+
+Для реальних продажів використовувати фотографії конкретних товарів та погоджені з флористом характеристики. AI-assisted фото не видавати за гарантований вигляд доставленого букета.
+
+Оригінальні фотографії мали повтори; повторні ракурси не створюють нових SKU. Процедура одноразового імпорту в репозиторій знаходиться в `scripts/import-bouquets.mjs`; GitHub Actions успішно додав файли до `public/catalog/`.
+
+## Технології
+
+- React 19 + Vite, `lucide-react`.
+- Telegram WebApp SDK.
+- Vercel Functions: `api/webhook.js`, `api/order.js`, `api/health.js`, `api/_lib.js`.
+- GitHub `main` автоматично розгортається у Vercel.
+
+## Запуск локально
+
+```bash
+npm install
+npm run dev
+```
+
+`npm run build` створить `dist`. Звичайний браузер підходить для перегляду всіх екранів, але тестові замовлення надсилаються тільки з підтвердженого Telegram Mini App.
+
+## Конфігурація Telegram
+
+Не публікуйте токени. Раніше переданий у чат токен слід **відкликати та перевипустити через BotFather**.
+
+У налаштуваннях Vercel Production Environment Variables:
+
+| Назва | Значення |
+|---|---|
+| `BOT_TOKEN` | новий секретний токен від BotFather |
+| `ADMIN_CHAT_ID` | Chat ID менеджера, який приймає тестові заявки |
+| `TELEGRAM_WEBHOOK_SECRET` | випадковий секрет для заголовка Telegram webhook |
+| `PUBLIC_APP_URL` | `https://fluer-telegram-shop.vercel.app` |
+
+Після встановлення перемінних — redeploy Production. Зареєструйте webhook через Telegram Bot API `setWebhook` на `https://fluer-telegram-shop.vercel.app/api/webhook` із тим самим `secret_token`. Встановіть веб-адресу Mini App в BotFather.
+
+## Обмеження і безпека
+
+- Система перевіряє підпис Telegram `initData` на сервері та рахує ціни серверною таблицею, не довіряє ціні від клієнта.
+- Webhook перевіряє секретний заголовок Telegram.
+- Заявки лише сповіщають менеджера через Telegram і не записуються у базу даних; можливі дублікати.
+- Справжні замовлення, маршрути, платежі й тарифи доставки не реалізовані.
+- Перед комерційним запуском потрібні PostgreSQL, адміністраторська панель, облік залишків, логістика, перевірка доставки, idempotency, rate limiting, політика персональних даних та сертифікований платіжний шлюз.
+
+Робота з реальною інформацією отримувачів — лише з їх належною поінформованістю та у відповідності до вимог захисту персональних даних.
