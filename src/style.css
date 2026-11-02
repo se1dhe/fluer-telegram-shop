@@ -117,3 +117,5 @@ nav span{font-size:9px;font-weight:700;letter-spacing:.05px}
 
 .photo-disclosure{margin:0 0 18px!important;font-size:11px!important;line-height:1.55;color:var(--muted)!important;letter-spacing:.1px}
 @supports(padding:max(0px)){.overlay{padding-bottom:max(170px,env(safe-area-inset-bottom))}}
+
+.release-info{margin:16px 2px 24px;color:var(--muted);font:500 10px/1.8 ui-monospace,SFMono-Regular,monospace;letter-spacing:.4px;overflow-wrap:anywhere;text-align:center}
