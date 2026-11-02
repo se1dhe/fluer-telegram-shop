@@ -134,3 +134,13 @@ input,textarea,select{font-size:16px!important;-webkit-text-size-adjust:100%}
 @media(prefers-reduced-motion:reduce){.cart-toast{animation:none}}
 
 .demo-order-tag{margin-top:13px;padding:10px 12px;background:rgba(232,197,130,.065);border:1px solid rgba(232,197,130,.16);color:#d9c59e;font-size:10px;line-height:1.6;border-radius:9px}
+
+/* iOS Safari/Telegram WebView: text fields at least 16px to prevent focus auto-zoom. */
+input,textarea,select,.field input,.field textarea,.field select,.search input{font-size:16px!important;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+input[type=date],input[type=time],input[type=tel]{font-size:16px!important;}
+.cart-toast{position:fixed;bottom:calc(88px + env(safe-area-inset-bottom));left:12px;right:12px;z-index:29;max-width:580px;margin:0 auto;background:#262a2e;border:1px solid rgba(232,197,130,.4);border-radius:14px;box-shadow:0 12px 38px rgba(0,0,0,.4);display:flex;align-items:center;gap:8px;justify-content:space-between;padding:12px;color:#E8C582;animation:toast-in .22s ease-out}
+.cart-toast>div{display:flex;align-items:center;gap:10px;min-width:0;font-size:12px;font-weight:700}.cart-toast>div span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.cart-toast button{background:#E8C582;color:#101216;border-radius:9px;display:flex;align-items:center;padding:10px;font-size:11px;font-weight:800;white-space:nowrap}
+.plus-count{font-size:13px;font-weight:800;color:#E8C582}
+@keyframes toast-in{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+@media(prefers-reduced-motion:reduce){.cart-toast{animation:none}}
