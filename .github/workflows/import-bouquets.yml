@@ -1,0 +1,34 @@
+name: Import FLEUR catalog photos
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/import-bouquets.mjs'
+      - '.github/workflows/import-bouquets.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  media:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Import optimized catalog media
+        run: node scripts/import-bouquets.mjs
+      - name: Commit catalog photos to repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/catalog
+          if git diff --cached --quiet; then
+            echo "All images already tracked."
+          else
+            git commit -m "assets: add 8 bouquet photos and real-photo galleries"
+            git push
+          fi
