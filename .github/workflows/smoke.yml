@@ -1,0 +1,32 @@
+name: Production smoke check
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Wait for production URL and verify app, media and API
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://fluer-telegram-shop.vercel.app"
+          for i in $(seq 1 24); do
+            CODE=$(curl -sSL -o /tmp/home.html -w '%{http_code}' "$BASE/" || true)
+            if [ "$CODE" = "200" ] && grep -q 'FLEUR' /tmp/home.html; then break; fi
+            echo "Attempt $i: home HTTP $CODE; retrying..."
+            sleep 10
+          done
+          curl -fsS "$BASE/" | grep -q 'FLEUR'
+          curl -fsS "$BASE/api/health" | grep -q '"ok":true'
+          curl -fsS -o /tmp/flower.webp "$BASE/catalog/burgundy-chrysanthemum.webp"
+          test "$(wc -c </tmp/flower.webp)" -gt 10000
+          curl -fsS -o /tmp/real.webp "$BASE/catalog/burgundy-chrysanthemum-real.webp"
+          test "$(wc -c </tmp/real.webp)" -gt 10000
+          echo "PASS: production HTML, health and both image modes reachable"
