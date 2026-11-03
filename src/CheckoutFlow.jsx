@@ -1,6 +1,6 @@
 import React,{useState,useEffect,useRef} from 'react';
 import {ArrowLeft,ChevronRight,CheckCircle2,CreditCard,MapPin,ShieldCheck,Gift,Phone,Wallet,Info,X} from 'lucide-react';
-import {t,money,SUPPORTED_LANGS,LANG_LABELS} from './i18n.js';
+import {t,money,SUPPORTED_LANGS,LANG_FLAGS,LANG_NAMES} from './i18n.js';
 import './checkout.css';
 
 const slots=['09:00–12:00','12:00–15:00','15:00–18:00','18:00–21:00'];
@@ -73,7 +73,7 @@ export default function CheckoutFlow({sum,cart,products,tg,lang,onLanguageChange
    <button onClick={back} aria-label={tr('checkout.back')}><ArrowLeft size={21}/></button>
    <div><strong>{tr('checkout.title')}</strong><small>{tr('checkout.stepCount',{step})}</small></div>
    <div className="co-lang-switch" role="group" aria-label="Language / Мова / Язык">
-    {SUPPORTED_LANGS.map(code=><button key={code} type="button" className={lang===code?'active':''} aria-pressed={lang===code} onClick={()=>onLanguageChange(code)}>{LANG_LABELS[code]}</button>)}
+    {SUPPORTED_LANGS.map(code=><button key={code} type="button" lang={code} title={LANG_NAMES[code]} aria-label={LANG_NAMES[code]} className={lang===code?'active':''} aria-pressed={lang===code} onClick={()=>onLanguageChange(code)}><span aria-hidden="true">{LANG_FLAGS[code]}</span></button>)}
    </div>
    <span className="co-demo-tag">DEMO</span>
   </div>
