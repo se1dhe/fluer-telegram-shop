@@ -144,3 +144,15 @@ input[type=date],input[type=time],input[type=tel]{font-size:16px!important;}
 .plus-count{font-size:13px;font-weight:800;color:#E8C582}
 @keyframes toast-in{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
 @media(prefers-reduced-motion:reduce){.cart-toast{animation:none}}
+
+
+/* Locale switch: same three-language pattern as beauty-booking-bot.
+   Keep native-sized touch targets while preserving compact mobile header. */
+header .logo{flex-shrink:0}
+header .iconbutton{flex-shrink:0}
+.fleur-lang-switch{display:flex;align-items:center;gap:2px;background:#191C22;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:3px;flex-shrink:0;margin-left:6px}
+.fleur-lang-switch button{min-width:33px;height:35px;padding:0 5px;border-radius:7px;color:#9299A6;background:transparent;font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;font-size:10px;font-weight:780;letter-spacing:0}
+.fleur-lang-switch button.active{color:#17191c;background:#E8C582}
+.fleur-lang-switch button:focus-visible{outline:2px solid #E8C582;outline-offset:2px}
+@media(max-width:530px){header .city{display:none}header .fleur-lang-switch{margin-left:auto}}
+@media(max-width:370px){header{gap:7px;padding-inline:12px}header .logo{font-size:16px;letter-spacing:2.5px}.fleur-lang-switch{gap:0;margin-left:auto}.fleur-lang-switch button{min-width:30px;padding:0 3px;font-size:9px}nav span{font-size:8.5px}}
