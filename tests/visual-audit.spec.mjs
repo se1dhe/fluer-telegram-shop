@@ -79,7 +79,7 @@ for(const lang of ['uk','ru','en']){
   await page.getByPlaceholder('+380 XX XXX XX XX').fill('+380991112233');
   await page.getByRole('button',{name:copy['checkout.continue']}).click();
   await expect(page.getByText(copy['checkout.step2Title'])).toBeVisible();
-  await page.getByPlaceholder(copy['checkout.recipientPlaceholder']).fill('Test Recipient');
+  await page.getByPlaceholder(copy['checkout.recipientPlaceholder'],{exact:true}).fill('Test Recipient');
   await page.getByPlaceholder('+380 XX XXX XX XX').fill('+380991112233');
   await page.getByPlaceholder(copy['checkout.streetPlaceholder']).fill('Test street');
   await page.getByPlaceholder(copy['checkout.housePlaceholder']).fill('12');
