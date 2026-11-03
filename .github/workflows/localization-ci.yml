@@ -9,6 +9,8 @@ on:
       - 'src/style.css'
       - 'src/checkout.css'
       - 'tests/i18n.test.mjs'
+      - 'api/webhook.js'
+      - 'tests/webhook-language.test.mjs'
       - 'tests/localization.spec.mjs'
       - '.github/workflows/localization-ci.yml'
   workflow_dispatch:
@@ -28,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Check translation completeness
-        run: node --test tests/i18n.test.mjs
+        run: node --test tests/i18n.test.mjs tests/webhook-language.test.mjs
       - name: Build production bundle
         run: npm run build
       - name: Install Playwright
