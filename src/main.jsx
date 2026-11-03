@@ -2,7 +2,7 @@ import React,{useState,useEffect} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Home,Search,Heart,ShoppingBag,User,ArrowLeft,Plus,Minus,MapPin,Truck,Gift,ChevronRight,ShieldCheck,Check} from 'lucide-react';
 import CheckoutFlow from './CheckoutFlow.jsx';
-import {t,getInitialLang,persistLang,LANG_LABELS,SUPPORTED_LANGS,money,dateTime} from './i18n.js';
+import {t,getInitialLang,persistLang,LANG_FLAGS,LANG_NAMES,SUPPORTED_LANGS,money,dateTime} from './i18n.js';
 import './style.css';
 
 const tg=window.Telegram?.WebApp;
@@ -26,7 +26,7 @@ const save=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value))}cat
 
 function LanguageSwitch({lang,onChange,compact=false}){
  return <div className={'fleur-lang-switch'+(compact?' fleur-lang-switch-compact':'')} role="group" aria-label="Language / Мова / Язык">
-  {SUPPORTED_LANGS.map(code=><button key={code} type="button" lang={code} aria-label={code==='uk'?'Українська':code==='ru'?'Русский':'English'} aria-pressed={lang===code} className={lang===code?'active':''} onClick={()=>onChange(code)}>{LANG_LABELS[code]}</button>)}
+  {SUPPORTED_LANGS.map(code=><button key={code} type="button" lang={code} title={LANG_NAMES[code]} aria-label={LANG_NAMES[code]} aria-pressed={lang===code} className={lang===code?'active':''} onClick={()=>onChange(code)}><span aria-hidden="true">{LANG_FLAGS[code]}</span></button>)}
  </div>;
 }
 
