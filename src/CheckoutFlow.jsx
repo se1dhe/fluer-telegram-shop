@@ -5,14 +5,13 @@ import './checkout.css';
 
 const slots=['09:00–12:00','12:00–15:00','15:00–18:00','18:00–21:00'];
 const paymentOptions=[
- {id:'mono',name:'monobank',caption:'checkout.cardDemo',badge:'mono',mark:'m'},
- {id:'privat',name:'ПриватБанк · LiqPay',caption:'checkout.cardDemo',badge:'privat',mark:'24'},
- {id:'apple',name:'Apple Pay',caption:'checkout.appleDemo',badge:'apple',mark:'●'},
- {id:'google',name:'Google Pay',caption:'checkout.googleDemo',badge:'google',mark:'G'}
+ {id:'mono',nameKey:'pay.mono',caption:'checkout.cardDemo',badge:'mono',mark:'m'},
+ {id:'privat',nameKey:'pay.privat',caption:'checkout.cardDemo',badge:'privat',mark:'24'},
+ {id:'apple',nameKey:'pay.apple',caption:'checkout.appleDemo',badge:'apple',mark:'●'},
+ {id:'google',nameKey:'pay.google',caption:'checkout.googleDemo',badge:'google',mark:'G'}
 ];
 const today=()=>{const d=new Date(),m=d.getMonth()+1;return d.getFullYear()+'-'+String(m).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const defaults={name:'',phone:'',recipient:'',recipientPhone:'',kind:'courier',town:'',street:'',house:'',flat:'',entrance:'',floor:'',date:today(),slot:slots[1],courierNote:'',card:'',anonymous:false,callRecipient:true,payment:'mono'};
-const methodNames={mono:'monobank',privat:'ПриватБанк / LiqPay',apple:'Apple Pay',google:'Google Pay'};
 
 export default function CheckoutFlow({sum,cart,products,tg,lang,onLanguageChange,onCancel,onComplete}){
  const tr=(key,vars)=>t(lang,key,vars);
@@ -44,15 +43,15 @@ export default function CheckoutFlow({sum,cart,products,tg,lang,onLanguageChange
  </div>;
 
  function nativeContact(){
-  if(!tg?.requestContact){setContactStatus(tr('checkout.contactUnavailable'));return}
-  try{tg.requestContact(granted=>setContactStatus(t(lang,granted?'checkout.contactGranted':'checkout.contactDenied')))}
-  catch{setContactStatus(tr('checkout.contactError'))}
+  if(!tg?.requestContact){setContactStatus('checkout.contactUnavailable');return}
+  try{tg.requestContact(granted=>setContactStatus(granted?'checkout.contactGranted':'checkout.contactDenied'))}
+  catch{setContactStatus('checkout.contactError')}
  }
  const validate=()=>{
-  if(step===1&&(!data.name.trim()||data.phone.replace(/\D/g,'').length<9))return tr('checkout.errContact');
-  if(step===2&&(!data.recipient.trim()||data.recipientPhone.replace(/\D/g,'').length<9))return tr('checkout.errRecipient');
-  if(step===2&&data.kind!=='pickup'&&(!data.town.trim()||!data.street.trim()||!data.house.trim()))return tr('checkout.errAddress');
-  if(step===2&&(!data.date||data.date<today()))return tr('checkout.errDate');
+  if(step===1&&(!data.name.trim()||data.phone.replace(/\D/g,'').length<9))return 'checkout.errContact';
+  if(step===2&&(!data.recipient.trim()||data.recipientPhone.replace(/\D/g,'').length<9))return 'checkout.errRecipient';
+  if(step===2&&data.kind!=='pickup'&&(!data.town.trim()||!data.street.trim()||!data.house.trim()))return 'checkout.errAddress';
+  if(step===2&&(!data.date||data.date<today()))return 'checkout.errDate';
   return '';
  };
  const next=()=>{const issue=validate();if(issue){setError(issue);try{tg?.HapticFeedback?.notificationOccurred?.('error')}catch{}return}setStep(prev=>Math.min(4,prev+1))};
@@ -62,7 +61,7 @@ export default function CheckoutFlow({sum,cart,products,tg,lang,onLanguageChange
   if(complete)return;
   setComplete(true);
   const order={id:'DEMO-'+Math.random().toString(36).slice(2,8).toUpperCase(),total,baseTotal:sum,deliveryFee,
-   method:data.payment,methodName:methodNames[data.payment],kind:data.kind,date:new Date().toISOString(),deliveryDate:data.date,
+   method:data.payment,kind:data.kind,date:new Date().toISOString(),deliveryDate:data.date,
    time:data.slot,items:Object.fromEntries(Object.entries(cart)),status:'demo',localOnly:true};
   try{tg?.HapticFeedback?.notificationOccurred?.('success')}catch{}
   onComplete(order);
@@ -86,7 +85,7 @@ export default function CheckoutFlow({sum,cart,products,tg,lang,onLanguageChange
    {step===1&&<div className="co-form">
     {input('name',tr('checkout.name'),tr('checkout.namePlaceholder'),{autoComplete:'name',required:true})}
     {fieldPhone('phone',tr('checkout.phone'),true)}
-    {contactStatus&&<p className="co-footnote">{contactStatus}</p>}
+    {contactStatus&&<p className="co-footnote">{tr(contactStatus)}</p>}
     <div className="co-notice"><ShieldCheck size={20}/>{tr('checkout.privacy')}</div>
    </div>}
 
@@ -129,7 +128,7 @@ export default function CheckoutFlow({sum,cart,products,tg,lang,onLanguageChange
    {step===4&&<div className="co-form">
     <div className="co-heading">{tr('checkout.paymentMethod')}</div>
     <div className="co-method-list">{paymentOptions.map(opt=><button key={opt.id} className={'co-method '+(data.payment===opt.id?'selected':'')} onClick={()=>change('payment',opt.id)}>
-     <span className={'co-paymark '+opt.badge}>{opt.mark}</span><span><b>{opt.name}</b><small>{tr(opt.caption)}</small></span><i className="co-radio"/>
+     <span className={'co-paymark '+opt.badge}>{opt.mark}</span><span><b>{tr(opt.nameKey)}</b><small>{tr(opt.caption)}</small></span><i className="co-radio"/>
     </button>)}</div>
     <div className="co-summary">
      <div><span>{tr('checkout.subtotal')}</span><strong>{format(sum)}</strong></div>
@@ -138,7 +137,7 @@ export default function CheckoutFlow({sum,cart,products,tg,lang,onLanguageChange
     </div>
     <div className="co-notice"><ShieldCheck size={20}/>{tr('checkout.localNotice')}</div>
    </div>}
-   {error&&<p className="co-error">{error}</p>}
+   {error&&<p className="co-error">{tr(error)}</p>}
   </div>
   <div className="co-bottom">
    <div className="co-bottom-total"><span>{tr('checkout.orderTotal')}<small>{tr(deliveryFee===null?'checkout.deliverySeparate':'checkout.demoEstimate')}</small></span><strong>{format(total)}</strong></div>
@@ -147,14 +146,14 @@ export default function CheckoutFlow({sum,cart,products,tg,lang,onLanguageChange
 
   {paymentOpen&&<div className="co-payment-backdrop"><div className="co-sheet" role="dialog" aria-modal="true" aria-label={tr('checkout.paymentAria')}>
    <div className="co-sheet-top"><span>{tr('checkout.paymentHeading')}</span><button onClick={()=>setPaymentOpen(false)} aria-label={tr('checkout.close')}><X size={20}/></button></div>
-   <div className="co-merchant"><span className={'co-paymark '+selectedPayment.badge}>{selectedPayment.mark}</span><div><h3>{selectedPayment.name}</h3><p>{tr('checkout.merchantNotice')}</p></div></div>
+   <div className="co-merchant"><span className={'co-paymark '+selectedPayment.badge}>{selectedPayment.mark}</span><div><h3>{tr(selectedPayment.nameKey)}</h3><p>{tr('checkout.merchantNotice')}</p></div></div>
    <div className="co-sheet-sum">{format(total)}<small>{deliveryFee===null?tr('checkout.feeAdded'):''}</small></div>
    {['mono','privat'].includes(data.payment)?<div className="co-demo-card">
     <div className="co-card-head"><CreditCard size={22}/>{tr('checkout.testCard')}</div>
     <div className="co-card-number">•••• •••• •••• 0000</div>
     <div className="co-card-grid"><span>{tr('checkout.expiry')}<br/><b>{tr('checkout.expiryPlaceholder')}</b></span><span>CVV<br/><b>•••</b></span></div>
     <p>{tr('checkout.cardSafe')}</p>
-   </div>:<div className="co-wallet-demo"><Wallet size={35}/><strong>{selectedPayment.name}</strong><p>{tr('checkout.walletDesc')}</p><div className="co-wallet-line"><span>{tr('checkout.walletMerchant')}</span><b>{format(total)}</b></div></div>}
+   </div>:<div className="co-wallet-demo"><Wallet size={35}/><strong>{tr(selectedPayment.nameKey)}</strong><p>{tr('checkout.walletDesc')}</p><div className="co-wallet-line"><span>{tr('checkout.walletMerchant')}</span><b>{format(total)}</b></div></div>}
    <div className="co-demo-warning"><ShieldCheck size={17}/>{tr('checkout.simulation')}</div>
    <button className="co-primary" disabled={complete} onClick={submitDemo}><CheckCircle2 size={19}/>{tr('checkout.complete')}</button>
    <p className="co-sheet-caption">{tr('checkout.localSaved')}</p>
