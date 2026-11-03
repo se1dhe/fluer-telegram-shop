@@ -2,6 +2,8 @@
 // Product names, delivery and payment demos intentionally share the same dictionary.
 export const SUPPORTED_LANGS=['uk','ru','en'];
 export const LANG_LABELS={uk:'УКР',ru:'РУС',en:'ENG'};
+export const LANG_FLAGS={uk:'🇺🇦',ru:'🇷🇺',en:'🇬🇧'};
+export const LANG_NAMES={uk:'Українська',ru:'Русский',en:'English'};
 export const DATE_LOCALES={uk:'uk-UA',ru:'ru-RU',en:'en-GB'};
 const uk={
 'city':'Дніпро','currency':'₴','demo':'Демо','openCart':'Відкрити кошик',
