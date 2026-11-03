@@ -113,7 +113,7 @@ function App(){
    </>}
    {tab==='orders'&&<>
     <div className="section page"><div><small>{tr('orders.eyebrow')}</small><h2>{tr('orders.title')}</h2></div></div>
-    {orders.length?orders.map(order=><div className="order" key={order.id}><strong>{tr('orders.test',{id:order.id})}</strong><p>{dateTime(order.date,lang)} · {order.methodName||tr('demo')}</p><b>{format(order.total)}</b><div className="demo-order-tag">{tr('orders.demoTag')}</div></div>):<div className="empty"><ShoppingBag size={36}/><h2>{tr('orders.empty')}</h2><p>{tr('orders.hint')}</p><button onClick={()=>nav('catalog')}>{tr('orders.browse')}</button></div>}
+    {orders.length?orders.map(order=><div className="order" key={order.id}><strong>{tr('orders.test',{id:order.id})}</strong><p>{dateTime(order.date,lang)} · {order.method&&['mono','privat','apple','google'].includes(order.method)?tr('pay.'+order.method):(order.methodName||tr('demo'))}</p><b>{format(order.total)}</b><div className="demo-order-tag">{tr('orders.demoTag')}</div></div>):<div className="empty"><ShoppingBag size={36}/><h2>{tr('orders.empty')}</h2><p>{tr('orders.hint')}</p><button onClick={()=>nav('catalog')}>{tr('orders.browse')}</button></div>}
    </>}
    {tab==='profile'&&<>
     <div className="section page"><div><small>{tr('profile.eyebrow')}</small><h2>{tr('profile.title')}</h2></div></div>
