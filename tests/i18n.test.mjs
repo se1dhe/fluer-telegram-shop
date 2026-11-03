@@ -24,7 +24,7 @@ test('all three dictionaries have identical non-empty keys and interpolations',(
 });
 test('all literal translation calls in components are implemented',()=>{
  const references=[...source.matchAll(/\btr\('([^']+)'/g)].map(x=>x[1]);
- for(const ref of references){if(ref.endsWith('.'))continue;assert.ok(ref in I18N.uk,'missing translation '+ref)}
+ for(const ref of references){if(ref.endsWith('.')||ref==='checkout.step')continue;assert.ok(ref in I18N.uk,'missing translation '+ref)}
  for(const step of [1,2,3,4])for(const suffix of ['', 'Title','Desc']) assert.ok('checkout.step'+step+suffix in I18N.en);
  for(const cat of ['all','roses','chrysanthemums','lisianthus'])assert.ok('cat.'+cat in I18N.ru);
  for(const id of ['rose','peony','tulip','lilac','ivory','redcream','fuchsia','eustoma'])
