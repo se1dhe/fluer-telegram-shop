@@ -29,13 +29,40 @@ test('language can change within checkout without losing form data or cart',asyn
  await expect(page.getByText('Крок 1 із 4')).toBeVisible();
  await page.getByPlaceholder('Як до вас звертатися').fill('Test Guest');
  await page.getByPlaceholder('+380 XX XXX XX XX').fill('+380991112233');
- await page.locator('.co-lang-switch').getByRole('button',{name:'ENG'}).click();
+ await page.locator('.co-lang-switch').getByRole('button',{name:'English'}).click();
  await expect(page.getByText('Step 1 of 4')).toBeVisible();
  await expect(page.getByPlaceholder('How should we address you?')).toHaveValue('Test Guest');
  await page.getByRole('button',{name:'Continue'}).click();
  await expect(page.getByText('Step 2 of 4')).toBeVisible();
  await expect(page.getByText('Who is receiving the flowers?')).toBeVisible();
- await page.locator('.co-lang-switch').getByRole('button',{name:'РУС'}).click();
+ await page.locator('.co-lang-switch').getByRole('button',{name:'Русский'}).click();
  await expect(page.getByText('Шаг 2 из 4')).toBeVisible();
  await expect(page.getByText('Кому вручить цветы?')).toBeVisible();
+});
+
+test('country flags are visible and accessible in all three languages', async({page})=>{
+ await page.goto(base+'/?lang=uk');
+ const sw=page.locator('.fleur-lang-switch');
+ for(const [name,flag] of [['Українська','🇺🇦'],['Русский','🇷🇺'],['English','🇬🇧']]){
+  const button=sw.getByRole('button',{name});
+  await expect(button).toBeVisible();
+  await expect(button).toContainText(flag);
+ }
+ await sw.getByRole('button',{name:'English'}).click();
+ await expect(page.getByRole('heading',{name:/Flowers/})).toBeVisible();
+ await sw.getByRole('button',{name:'Русский'}).click();
+ await expect(page.getByRole('heading',{name:/Цветы/})).toBeVisible();
+ await sw.getByRole('button',{name:'Українська'}).click();
+ await expect(page.getByRole('heading',{name:/Квіти/})).toBeVisible();
+});
+test('validation errors change language in-place without resetting checkout fields',async({page})=>{
+ await page.goto(base+'/?lang=ru');
+ await page.getByRole('button',{name:/Добавить .* в корзину/}).first().click();
+ await page.getByRole('button',{name:'В корзину',exact:true}).click();
+ await page.getByRole('button',{name:'Оформить заказ'}).click();
+ await page.getByRole('button',{name:'Продолжить'}).click();
+ await expect(page.getByText('Укажите имя и корректный номер телефона.')).toBeVisible();
+ await page.locator('.co-lang-switch').getByRole('button',{name:'English'}).click();
+ await expect(page.getByText('Enter your name and a valid phone number.')).toBeVisible();
+ await expect(page.getByText('Укажите имя и корректный номер телефона.')).toHaveCount(0);
 });
