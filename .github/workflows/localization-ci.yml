@@ -1,0 +1,48 @@
+name: FLEUR UK RU EN localization checks
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/i18n.js'
+      - 'src/main.jsx'
+      - 'src/CheckoutFlow.jsx'
+      - 'src/style.css'
+      - 'src/checkout.css'
+      - 'tests/i18n.test.mjs'
+      - 'tests/localization.spec.mjs'
+      - '.github/workflows/localization-ci.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  i18n:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE_URL: http://127.0.0.1:4173
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install
+      - name: Check translation completeness
+        run: node --test tests/i18n.test.mjs
+      - name: Build production bundle
+        run: npm run build
+      - name: Install Playwright
+        run: |
+          npm install --no-save @playwright/test@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Serve compiled app
+        run: |
+          npm run preview -- --host 127.0.0.1 > /tmp/fleur-vite.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/fleur-vite.log
+          exit 1
+      - name: Test UK RU EN app on mobile Chromium
+        run: npx playwright test tests/localization.spec.mjs tests/checkout.spec.mjs --workers=1 --reporter=line
