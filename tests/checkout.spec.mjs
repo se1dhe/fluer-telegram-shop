@@ -35,7 +35,7 @@ test('four-step demo order completes without bank data or charges', async ({ pag
   await page.getByRole('button', { name: /Завершити демо-замовлення/i }).click();
   await expect(page.getByText(/Тестове замовлення #DEMO-/)).toBeVisible();
   const localOrder = await page.evaluate(() => JSON.parse(localStorage.getItem('fleur_orders') || '[]')[0]);
-  expect(localOrder.methodName).toBe('Apple Pay');
+  expect(localOrder.method).toBe('apple');
   expect(localOrder.localOnly).toBe(true);
 });
 
