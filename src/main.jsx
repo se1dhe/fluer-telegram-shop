@@ -1,21 +1,149 @@
-import React,{useState,useEffect} from 'react';import{createRoot}from'react-dom/client';import{Home,Search,Heart,ShoppingBag,User,ArrowLeft,Plus,Minus,MapPin,Truck,Gift,ChevronRight,X,ShieldCheck,Check}from'lucide-react';import './style.css';
+import React,{useState,useEffect} from 'react';
+import {createRoot} from 'react-dom/client';
+import {Home,Search,Heart,ShoppingBag,User,ArrowLeft,Plus,Minus,MapPin,Truck,Gift,ChevronRight,ShieldCheck,Check} from 'lucide-react';
 import CheckoutFlow from './CheckoutFlow.jsx';
-const tg=window.Telegram?.WebApp;try{tg?.ready();tg?.expand();tg?.setHeaderColor?.('#101216');tg?.setBackgroundColor?.('#101216')}catch{}
-const photos=['/catalog/burgundy-chrysanthemum.webp','/catalog/lime-chrysanthemum.webp','/catalog/red-roses-pink.webp','/catalog/fuchsia-roses.webp'];
-const products=[{"id":"rose","name":"Бордова симфонія","price":1890,"tag":"Вибір флориста","cat":"Хризантеми","desc":"Білі й бордові хризантеми","img":"/catalog/burgundy-chrysanthemum.webp","real":"/catalog/burgundy-chrysanthemum-real.webp"},{"id":"peony","name":"Лаймовий акцент","price":2450,"tag":"Особливий","cat":"Хризантеми","desc":"Білі хризантеми · лаймове пакування","img":"/catalog/lime-chrysanthemum.webp","real":"/catalog/lime-chrysanthemum-real.webp"},{"id":"tulip","name":"Кольорова історія","price":1590,"tag":"Новинка","cat":"Хризантеми","desc":"Різнокольорові хризантеми","img":"/catalog/rainbow-chrysanthemum.webp","real":"/catalog/rainbow-chrysanthemum-real.webp"},{"id":"lilac","name":"Червоне зізнання","price":2190,"tag":"Популярний","cat":"Троянди","desc":"Червоні троянди · рожеве пакування","img":"/catalog/red-roses-pink.webp","real":"/catalog/red-roses-pink-real.webp"},{"id":"ivory","name":"Ніжна розкіш","price":2650,"tag":"Premium","cat":"Троянди","desc":"Кремово-лаймові троянди","img":"/catalog/ivory-roses.webp","real":"/catalog/ivory-roses-real.webp"},{"id":"redcream","name":"Тиха пристрасть","price":2890,"tag":"Premium","cat":"Троянди","desc":"Червоні троянди · кремове пакування","img":"/catalog/red-roses-cream.webp","real":"/catalog/red-roses-cream-real.webp"},{"id":"fuchsia","name":"Рожева мрія","price":2390,"tag":"Бестселер","cat":"Троянди","desc":"Малиново-рожеві троянди","img":"/catalog/fuchsia-roses.webp","real":"/catalog/fuchsia-roses-real.webp"},{"id":"eustoma","name":"Ранкова ніжність","price":1890,"tag":"Ніжний","cat":"Еустоми","desc":"Рожеві еустоми · білі пелюстки","img":"/catalog/pink-lisianthus.webp","real":"/catalog/pink-lisianthus-real.webp"}];
-const money=n=>n.toLocaleString('uk-UA')+' ₴';const base={name:'',phone:'',recipient:'',recipientPhone:'',destination:'',date:'',time:'12:00–15:00',card:'',anonymous:false,outCity:false};function saved(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch{return d}}
-function App(){const[photoMode,P]=useState(0);const[toast,setToast]=useState('');const[tab,T]=useState('home'),[detail,D]=useState(null),[cartOpen,C]=useState(false),[checkout,Q]=useState(false),[step,S]=useState(1),[cart,A]=useState(()=>saved('fleur_cart',{})),[favorites,F]=useState(()=>saved('fleur_favs',[])),[orders,O]=useState(()=>saved('fleur_orders',[])),[cat,K]=useState('Усі'),[search,R]=useState(''),[form,B]=useState(base),[error,E]=useState(''),[busy,V]=useState(false);useEffect(()=>localStorage.setItem('fleur_cart',JSON.stringify(cart)),[cart]);useEffect(()=>localStorage.setItem('fleur_favs',JSON.stringify(favorites)),[favorites]);useEffect(()=>localStorage.setItem('fleur_orders',JSON.stringify(orders)),[orders]);const count=Object.values(cart).reduce((a,b)=>a+b,0),sum=products.reduce((a,p)=>a+p.price*(cart[p.id]||0),0);useEffect(()=>{if(!toast)return;const t=setTimeout(()=>setToast(''),2700);return()=>clearTimeout(t)},[toast]);function nav(x){T(x);D(null);C(false);Q(false)}function close(){if(checkout){Q(false);C(true)}else if(cartOpen)C(false);else if(detail)D(null);else nav('home')}useEffect(()=>{try{if(checkout){tg?.BackButton?.show()}else if(cartOpen||detail||tab!=='home'){tg?.BackButton?.show();tg?.BackButton?.onClick(close)}else tg?.BackButton?.hide()}catch{}return()=>{try{tg?.BackButton?.offClick(close)}catch{}}},[checkout,cartOpen,detail,tab]);function adjust(id,n){A(s=>{let v=Math.min(20,Math.max(0,(s[id]||0)+n)),r={...s};if(v)r[id]=v;else delete r[id];return r});if(n>0){const p=products.find(p=>p.id===id);setToast(p?p.name+' · додано до кошика':'Додано до кошика')}try{tg?.HapticFeedback?.selectionChanged()}catch{}}function fav(id){F(s=>s.includes(id)?s.filter(x=>x!==id):[...s,id])}function upd(k,v){B(s=>({...s,[k]:v}))}function goCheckout(){if(count){C(false);Q(true);S(1);E('')}}function next(){E('');if(step===1&&(!form.name.trim()||form.phone.trim().length<9))return E('Вкажіть ім’я та номер телефону');if(step===2&&(!form.recipient||form.recipientPhone.length<9||!form.destination||!form.date))return E('Заповніть дані отримувача, адресу й дату');S(s=>s+1)}
-async function send(){if(!tg?.initData)return E('Для тестового замовлення відкрийте магазин через Telegram-бота.');V(true);E('');try{const r=await fetch('/api/order',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({initData:tg.initData,items:cart,customer:form,outCity:form.outCity})});const d=await r.json();if(!r.ok)throw Error(d.error||'Сервіс недоступний');O(s=>[{id:d.id,total:sum,date:new Date().toISOString()},...s]);A({});Q(false);T('orders');B(base);tg?.HapticFeedback?.notificationOccurred('success')}catch(e){E(e.message)}finally{V(false)}}
-const card=p=><article className="product" key={p.id} onClick={()=>{D(p);P(0)}}><div className="photo"><img src={p.img} alt={p.name} loading="lazy"/><small>{p.tag}</small><button className="heart" onClick={e=>{e.stopPropagation();fav(p.id)}}><Heart size={17} fill={favorites.includes(p.id)?'currentColor':'none'}/></button></div><div className="pd"><h3>{p.name}</h3><p>{p.desc}</p><div><b>{money(p.price)}</b><button className="round" aria-label={"Додати "+p.name+" до кошика"} onClick={e=>{e.stopPropagation();adjust(p.id,1)}}>{cart[p.id]?<span className="plus-count">{cart[p.id]}</span>:<Plus size={18}/>}</button></div></div></article>;
-const field=(label,key,placeholder,type='text')=><label className="field">{label}<input value={form[key]} type={type} placeholder={placeholder} onChange={e=>upd(key,e.target.value)}/></label>;
-return <><header><button className="logo" onClick={()=>nav('home')}>FLEUR<span> /</span></button><div className="city"><MapPin size={14}/> Дніпро</div><button className="iconbutton" onClick={()=>C(true)}><ShoppingBag size={20}/>{count>0&&<em>{count}</em>}</button></header><main>
-{tab==='home'&&<><div className="hero"><div><small>FLEUR · ПРИВАТНА КОЛЕКЦІЯ</small><h1>Квіти.<br/><i>Емоції.</i><br/>Моменти.</h1><p>Ваші справжні букети. У новому світлі.</p><button onClick={()=>nav('catalog')}>Обрати букет <ChevronRight size={16}/></button></div><img src={photos[1]}/></div><div className="benefits"><span><Truck size={19}/>Доставка по Дніпру</span><span><Gift size={19}/>Листівка до букета</span></div><div className="section"><div><small>FLEUR / CURATED COLLECTION</small><h2>Колекція букетів</h2></div><button onClick={()=>nav('catalog')}>Усі <ChevronRight size={15}/></button></div><div className="grid">{products.map(card)}</div><div className="note">FLEUR · Фотографії реальних букетів · ціни демонстраційні. Доставка й оплата не підключені.</div></>}
-{tab==='catalog'&&<><div className="section page"><div><small>FLEUR / COLLECTION</small><h2>Каталог квітів</h2></div></div><div className="search"><Search size={19}/><input placeholder="Знайти ідеальний букет" value={search} onChange={e=>R(e.target.value)}/></div><div className="chips">{['Усі','Троянди','Хризантеми','Еустоми'].map(x=><button className={cat===x?'on':''} onClick={()=>K(x)} key={x}>{x}</button>)}</div><p className="muted">Вишукані композиції · {products.filter(p=>(cat==='Усі'||p.cat===cat)&&p.name.toLowerCase().includes(search.toLowerCase())).length} композиції</p><div className="grid">{products.filter(p=>(cat==='Усі'||p.cat===cat)&&(p.name+' '+p.desc).toLowerCase().includes(search.toLowerCase())).map(card)}</div></>}
-{tab==='favs'&&<><div className="section page"><div><small>ВАШ ВИБІР</small><h2>Улюблене</h2></div></div>{favorites.length?<div className="grid">{products.filter(p=>favorites.includes(p.id)).map(card)}</div>:<div className="empty"><Heart size={36}/><h2>Ще немає улюблених</h2><p>Натисніть сердечко на букеті, щоб зберегти його.</p><button onClick={()=>nav('catalog')}>Переглянути букети</button></div>}</>}
-{tab==='orders'&&<><div className="section page"><div><small>ІСТОРІЯ ПОКУПОК</small><h2>Мої замовлення</h2></div></div>{orders.length?orders.map(o=><div className="order" key={o.id}><strong>Тестове замовлення #{o.id}</strong><p>{new Date(o.date).toLocaleString('uk-UA')} · {o.methodName||'Демо'}</p><b>{money(o.total)}</b><div className="demo-order-tag">Тестове замовлення · без списання коштів</div></div>):<div className="empty"><ShoppingBag size={36}/><h2>Замовлень ще немає</h2><p>Оберіть квіти для особливого моменту.</p><button onClick={()=>nav('catalog')}>Обрати букет</button></div>}</>}
-{tab==='profile'&&<><div className="section page"><div><small>ВАШ ПРОСТІР</small><h2>Профіль</h2></div></div><div className="profile"><div className="avatar">{(tg?.initDataUnsafe?.user?.first_name||'Г')[0]}</div><div><b>{tg?.initDataUnsafe?.user?.first_name||'Гість FLEUR'}</b><p>Ваш квітковий простір</p></div></div><button className="menu" onClick={()=>nav('orders')}><ShoppingBag size={19}/> Мої замовлення <ChevronRight/></button><button className="menu" onClick={()=>nav('favs')}><Heart size={19}/> Улюблені <ChevronRight/></button><div className="notice"><ShieldCheck size={20}/> Це демо: товари, ціни та доставка тестові. Оплата не приймається.</div><div className="release-info">FLEUR / SHORTCAST EDITION · 8 БУКЕТІВ · v2.3<br/>{window.location.host}</div></>}
-</main><nav>{[['home',Home,'Головна'],['catalog',Search,'Каталог'],['favs',Heart,'Улюблене'],['orders',ShoppingBag,'Замовлення'],['profile',User,'Профіль']].map(([x,I,label])=><button key={x} className={tab===x?'active':''} onClick={()=>nav(x)}><I size={21}/><span>{label}</span></button>)}</nav>
-{toast&&!checkout&&!cartOpen&&<div className="cart-toast" role="status"><div><Check size={17}/><span>{toast}</span></div><button onClick={()=>{setToast('');D(null);C(true)}}>До кошика <ChevronRight size={15}/></button></div>}
-{detail&&<div className="overlay"><div className="toolbar"><button onClick={()=>D(null)}><ArrowLeft/></button>Про букет<button onClick={()=>fav(detail.id)}><Heart fill={favorites.includes(detail.id)?'currentColor':'none'}/></button></div><img className="detailimage" src={photoMode===0?detail.img:detail.real}/><div className="content"><div className="photo-switch"><button className={photoMode===0?'selected':''} onClick={()=>P(0)}>Оброблене фото</button><button className={photoMode===1?'selected':''} onClick={()=>P(1)}>Оригінальне фото</button></div><p className="photo-disclosure">{photoMode===0?'Студійна візуалізація на основі реального букета':'Оригінальне фото реального букета без генеративних змін'}</p><small>КОЛЕКЦІЯ FLEUR · {detail.tag}</small><h2>{detail.name}</h2><p>{detail.desc}</p><h3>{money(detail.price)}</h3><div className="info"><Truck size={20}/> Доставка по Дніпру та за місто за погодженням</div><div className="info"><Gift size={20}/> Підпишемо листівку до подарунка</div><button className="primary" onClick={()=>{adjust(detail.id,1);D(null);C(true)}}>Додати до кошика <Plus size={18}/></button></div></div>}
-{cartOpen&&<div className="overlay"><div className="toolbar"><button onClick={()=>C(false)}><ArrowLeft/></button>Кошик <span>{count} шт.</span></div><div className="content"><h2>Ваш вибір</h2>{count?products.filter(p=>cart[p.id]).map(p=><div className="cartitem" key={p.id}><img src={p.img}/><div><h3>{p.name}</h3><p>{money(p.price)}</p><div className="qty"><button onClick={()=>adjust(p.id,-1)}><Minus size={16}/></button>{cart[p.id]}<button onClick={()=>adjust(p.id,1)}><Plus size={16}/></button></div></div></div>):<div className="empty"><ShoppingBag/><h2>Кошик порожній</h2><button onClick={()=>{C(false);nav('catalog')}}>До каталогу</button></div>}</div>{count>0&&<div className="actionbar"><div>Вартість букетів <b>{money(sum)}</b></div><small>Доставка розраховується окремо</small><button className="primary" onClick={goCheckout}>Оформити замовлення <ChevronRight/></button></div>}</div>}
-{checkout&&<CheckoutFlow sum={sum} cart={cart} products={products} tg={tg} onCancel={()=>{Q(false);C(true)}} onComplete={order=>{O(s=>[order,...s]);A({});Q(false);T('orders');setToast('Демо-замовлення збережене')}}/>}</>};createRoot(document.getElementById('root')).render(<App/>);
+import {t,getInitialLang,persistLang,LANG_LABELS,SUPPORTED_LANGS,money,dateTime} from './i18n.js';
+import './style.css';
+
+const tg=window.Telegram?.WebApp;
+try{tg?.ready();tg?.expand();tg?.setHeaderColor?.('#101216');tg?.setBackgroundColor?.('#101216')}catch{}
+
+const rawProducts=[
+ {id:'rose',price:1890,cat:'chrysanthemums',slug:'burgundy-chrysanthemum'},
+ {id:'peony',price:2450,cat:'chrysanthemums',slug:'lime-chrysanthemum'},
+ {id:'tulip',price:1590,cat:'chrysanthemums',slug:'rainbow-chrysanthemum'},
+ {id:'lilac',price:2190,cat:'roses',slug:'red-roses-pink'},
+ {id:'ivory',price:2650,cat:'roses',slug:'ivory-roses'},
+ {id:'redcream',price:2890,cat:'roses',slug:'red-roses-cream'},
+ {id:'fuchsia',price:2390,cat:'roses',slug:'fuchsia-roses'},
+ {id:'eustoma',price:1890,cat:'lisianthus',slug:'pink-lisianthus'}
+];
+const heroPhoto='/catalog/lime-chrysanthemum.webp';
+const tabs=[['home',Home],['catalog',Search],['favs',Heart],['orders',ShoppingBag],['profile',User]];
+const categoryIDs=['all','roses','chrysanthemums','lisianthus'];
+const getSaved=(key,def)=>{try{const value=JSON.parse(localStorage.getItem(key));return value??def}catch{return def}};
+const save=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value))}catch{}};
+
+function LanguageSwitch({lang,onChange,compact=false}){
+ return <div className={'fleur-lang-switch'+(compact?' fleur-lang-switch-compact':'')} role="group" aria-label="Language / Мова / Язык">
+  {SUPPORTED_LANGS.map(code=><button key={code} type="button" lang={code} aria-label={code==='uk'?'Українська':code==='ru'?'Русский':'English'} aria-pressed={lang===code} className={lang===code?'active':''} onClick={()=>onChange(code)}>{LANG_LABELS[code]}</button>)}
+ </div>;
+}
+
+function App(){
+ const[lang,setLang]=useState(getInitialLang);
+ const[tab,setTab]=useState('home');
+ const[detail,setDetail]=useState(null);
+ const[photoMode,setPhotoMode]=useState(0);
+ const[cartOpen,setCartOpen]=useState(false);
+ const[checkout,setCheckout]=useState(false);
+ const[cart,setCart]=useState(()=>getSaved('fleur_cart',{}));
+ const[favorites,setFavorites]=useState(()=>getSaved('fleur_favs',[]));
+ const[orders,setOrders]=useState(()=>getSaved('fleur_orders',[]));
+ const[category,setCategory]=useState('all');
+ const[search,setSearch]=useState('');
+ const[toast,setToast]=useState('');
+
+ const tr=(key,vars)=>t(lang,key,vars);
+ const products=rawProducts.map(p=>({...p,name:tr('product.'+p.id+'.name'),tag:tr('product.'+p.id+'.tag'),desc:tr('product.'+p.id+'.desc'),img:'/catalog/'+p.slug+'.webp',real:'/catalog/'+p.slug+'-real.webp'}));
+ const totalItems=Object.values(cart).reduce((sum,q)=>sum+(Number.isInteger(q)?q:0),0);
+ const subtotal=products.reduce((sum,p)=>sum+(cart[p.id]||0)*p.price,0);
+ const format=n=>money(n,lang);
+ const changeLanguage=code=>{if(!SUPPORTED_LANGS.includes(code)||code===lang)return;setLang(code);persistLang(code);try{tg?.HapticFeedback?.selectionChanged?.()}catch{}};
+ const toastText=toast==='saved'?tr('cart.saved'):toast?tr('cart.toast',{name:products.find(p=>p.id===toast)?.name||tr('cart.added')}):'';
+
+ useEffect(()=>{save('fleur_cart',cart)},[cart]);
+ useEffect(()=>{save('fleur_favs',favorites)},[favorites]);
+ useEffect(()=>{save('fleur_orders',orders)},[orders]);
+ useEffect(()=>{document.documentElement.lang=lang;document.title='FLEUR · '+tr('catalog.title')},[lang]);
+ useEffect(()=>{if(!toast)return;const timeout=setTimeout(()=>setToast(''),2800);return()=>clearTimeout(timeout)},[toast]);
+
+ const nav=next=>{setTab(next);setDetail(null);setCartOpen(false);setCheckout(false)};
+ const back=()=>{if(cartOpen)setCartOpen(false);else if(detail)setDetail(null);else nav('home')};
+ useEffect(()=>{
+  try{if(checkout)tg?.BackButton?.show();else if(cartOpen||detail||tab!=='home'){tg?.BackButton?.show();tg?.BackButton?.onClick(back)}else tg?.BackButton?.hide()}catch{}
+  return()=>{try{tg?.BackButton?.offClick(back)}catch{}};
+ },[checkout,cartOpen,detail,tab]);
+
+ const adjust=(id,delta)=>{
+  setCart(prev=>{const next={...prev};const quantity=Math.min(20,Math.max(0,(next[id]||0)+delta));if(quantity)next[id]=quantity;else delete next[id];return next});
+  if(delta>0)setToast(id);
+  try{tg?.HapticFeedback?.selectionChanged?.()}catch{}
+ };
+ const favorite=id=>setFavorites(prev=>prev.includes(id)?prev.filter(x=>x!==id):[...prev,id]);
+ const displayProduct=p=>{setDetail(p.id);setPhotoMode(0)};
+ const selectedProduct=detail?products.find(p=>p.id===detail):null;
+ const visibleProducts=products.filter(p=>(category==='all'||p.cat===category)&&(p.name+' '+p.desc).toLocaleLowerCase().includes(search.toLocaleLowerCase()));
+
+ const productCard=p=><article className="product" key={p.id} onClick={()=>displayProduct(p)}>
+  <div className="photo">
+   <img src={p.img} alt={p.name} loading="lazy"/>
+   <small>{p.tag}</small>
+   <button type="button" className="heart" aria-label={tr('nav.favs')+': '+p.name} onClick={event=>{event.stopPropagation();favorite(p.id)}}><Heart size={17} fill={favorites.includes(p.id)?'currentColor':'none'}/></button>
+  </div>
+  <div className="pd"><h3>{p.name}</h3><p>{p.desc}</p><div><b>{format(p.price)}</b>
+   <button className="round" type="button" aria-label={tr('cart.addLabel',{name:p.name})} onClick={event=>{event.stopPropagation();adjust(p.id,1)}}>{cart[p.id]?<span className="plus-count">{cart[p.id]}</span>:<Plus size={18}/>}</button>
+  </div></div>
+ </article>;
+
+ return <>
+  <header>
+   <button className="logo" onClick={()=>nav('home')}>FLEUR<span> /</span></button>
+   <div className="city"><MapPin size={14}/>{tr('city')}</div>
+   <LanguageSwitch lang={lang} onChange={changeLanguage}/>
+   <button className="iconbutton" aria-label={tr('openCart')} onClick={()=>setCartOpen(true)}><ShoppingBag size={20}/>{totalItems>0&&<em>{totalItems}</em>}</button>
+  </header>
+  <main>
+   {tab==='home'&&<>
+    <div className="hero"><div><small>{tr('home.eyebrow')}</small><h1>{tr('home.h1a')}<br/><i>{tr('home.h1b')}</i><br/>{tr('home.h1c')}</h1><p>{tr('home.subtitle')}</p><button onClick={()=>nav('catalog')}>{tr('home.choose')} <ChevronRight size={16}/></button></div><img src={heroPhoto} alt="FLEUR"/>
+    </div>
+    <div className="benefits"><span><Truck size={19}/>{tr('home.delivery')}</span><span><Gift size={19}/>{tr('home.gift')}</span></div>
+    <div className="section"><div><small>{tr('home.featured')}</small><h2>{tr('home.title')}</h2></div><button onClick={()=>nav('catalog')}>{tr('home.all')} <ChevronRight size={15}/></button></div>
+    <div className="grid">{products.map(productCard)}</div><div className="note">{tr('home.note')}</div>
+   </>}
+   {tab==='catalog'&&<>
+    <div className="section page"><div><small>{tr('catalog.eyebrow')}</small><h2>{tr('catalog.title')}</h2></div></div>
+    <div className="search"><Search size={19}/><input aria-label={tr('catalog.search')} placeholder={tr('catalog.search')} value={search} onChange={event=>setSearch(event.target.value)}/></div>
+    <div className="chips">{categoryIDs.map(id=><button key={id} className={category===id?'on':''} onClick={()=>setCategory(id)}>{tr('cat.'+id)}</button>)}</div>
+    <p className="muted">{tr('catalog.count',{count:visibleProducts.length})}</p><div className="grid">{visibleProducts.map(productCard)}</div>
+   </>}
+   {tab==='favs'&&<>
+    <div className="section page"><div><small>{tr('fav.eyebrow')}</small><h2>{tr('fav.title')}</h2></div></div>
+    {favorites.length?<div className="grid">{products.filter(p=>favorites.includes(p.id)).map(productCard)}</div>:<div className="empty"><Heart size={36}/><h2>{tr('fav.empty')}</h2><p>{tr('fav.hint')}</p><button onClick={()=>nav('catalog')}>{tr('fav.browse')}</button></div>}
+   </>}
+   {tab==='orders'&&<>
+    <div className="section page"><div><small>{tr('orders.eyebrow')}</small><h2>{tr('orders.title')}</h2></div></div>
+    {orders.length?orders.map(order=><div className="order" key={order.id}><strong>{tr('orders.test',{id:order.id})}</strong><p>{dateTime(order.date,lang)} · {order.methodName||tr('demo')}</p><b>{format(order.total)}</b><div className="demo-order-tag">{tr('orders.demoTag')}</div></div>):<div className="empty"><ShoppingBag size={36}/><h2>{tr('orders.empty')}</h2><p>{tr('orders.hint')}</p><button onClick={()=>nav('catalog')}>{tr('orders.browse')}</button></div>}
+   </>}
+   {tab==='profile'&&<>
+    <div className="section page"><div><small>{tr('profile.eyebrow')}</small><h2>{tr('profile.title')}</h2></div></div>
+    <div className="profile"><div className="avatar">{(tg?.initDataUnsafe?.user?.first_name||'F')[0]}</div><div><b>{tg?.initDataUnsafe?.user?.first_name||tr('profile.guest')}</b><p>{tr('profile.tagline')}</p></div></div>
+    <button className="menu" onClick={()=>nav('orders')}><ShoppingBag size={19}/>{tr('profile.orders')} <ChevronRight/></button>
+    <button className="menu" onClick={()=>nav('favs')}><Heart size={19}/>{tr('profile.favs')} <ChevronRight/></button>
+    <div className="notice"><ShieldCheck size={20}/>{tr('profile.notice')}</div>
+    <div className="release-info">{tr('profile.version')}<br/>{window.location.host}</div>
+   </>}
+  </main>
+  <nav>{tabs.map(([id,Icon])=><button key={id} className={tab===id?'active':''} onClick={()=>nav(id)}><Icon size={21}/><span>{tr('nav.'+id)}</span></button>)}</nav>
+  {toast&&!checkout&&!cartOpen&&<div className="cart-toast" role="status"><div><Check size={17}/><span>{toastText}</span></div><button onClick={()=>{setToast('');setDetail(null);setCartOpen(true)}}>{tr('cart.shortcut')} <ChevronRight size={15}/></button></div>}
+  {selectedProduct&&<div className="overlay">
+   <div className="toolbar"><button onClick={()=>setDetail(null)} aria-label={tr('checkout.back')}><ArrowLeft/></button>{tr('detail.title')}<button onClick={()=>favorite(selectedProduct.id)} aria-label={tr('nav.favs')}><Heart fill={favorites.includes(selectedProduct.id)?'currentColor':'none'}/></button></div>
+   <img className="detailimage" src={photoMode===0?selectedProduct.img:selectedProduct.real} alt={selectedProduct.name}/>
+   <div className="content"><div className="photo-switch"><button className={photoMode===0?'selected':''} onClick={()=>setPhotoMode(0)}>{tr('detail.studio')}</button><button className={photoMode===1?'selected':''} onClick={()=>setPhotoMode(1)}>{tr('detail.real')}</button></div>
+    <p className="photo-disclosure">{tr(photoMode===0?'detail.studioNotice':'detail.realNotice')}</p><small>{tr('detail.collection')} · {selectedProduct.tag}</small>
+    <h2>{selectedProduct.name}</h2><p>{selectedProduct.desc}</p><h3>{format(selectedProduct.price)}</h3>
+    <div className="info"><Truck size={20}/>{tr('detail.delivery')}</div><div className="info"><Gift size={20}/>{tr('detail.card')}</div>
+    <button className="primary" onClick={()=>{adjust(selectedProduct.id,1);setDetail(null);setCartOpen(true)}}>{tr('detail.add')} <Plus size={18}/></button>
+   </div>
+  </div>}
+  {cartOpen&&<div className="overlay">
+   <div className="toolbar"><button onClick={()=>setCartOpen(false)} aria-label={tr('checkout.back')}><ArrowLeft/></button>{tr('cart.title')}<span>{tr('cart.count',{count:totalItems})}</span></div>
+   <div className="content"><h2>{tr('cart.selected')}</h2>
+   {totalItems?products.filter(p=>cart[p.id]).map(p=><div className="cartitem" key={p.id}><img src={p.img} alt={p.name}/><div><h3>{p.name}</h3><p>{format(p.price)}</p><div className="qty"><button onClick={()=>adjust(p.id,-1)} aria-label="-"><Minus size={16}/></button>{cart[p.id]}<button onClick={()=>adjust(p.id,1)} aria-label="+"><Plus size={16}/></button></div></div></div>):<div className="empty"><ShoppingBag/><h2>{tr('cart.empty')}</h2><button onClick={()=>nav('catalog')}>{tr('cart.toCatalog')}</button></div>}
+   </div>
+   {totalItems>0&&<div className="actionbar"><div>{tr('cart.subtotal')} <b>{format(subtotal)}</b></div><small>{tr('cart.delivery')}</small><button className="primary" onClick={()=>{setCartOpen(false);setCheckout(true)}}>{tr('cart.checkout')} <ChevronRight/></button></div>}
+  </div>}
+  {checkout&&<CheckoutFlow lang={lang} onLanguageChange={changeLanguage} sum={subtotal} cart={cart} products={products} tg={tg} onCancel={()=>{setCheckout(false);setCartOpen(true)}} onComplete={order=>{setOrders(prev=>[order,...prev]);setCart({});setCheckout(false);setTab('orders');setToast('saved')}}/>}
+ </>;
+}
+createRoot(document.getElementById('root')).render(<App/>);
