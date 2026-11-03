@@ -101,3 +101,12 @@
 @media(min-width:680px){.co-payment-backdrop{align-items:center}.co-sheet{border-radius:20px;max-width:490px}}
 @media(max-width:350px){.co-delivery-options{gap:5px}.co-delivery-card{padding:10px 7px}.co-delivery-card strong{font-size:10px}.co-delivery-card small{font-size:9px}.co-body{padding-inline:15px}.co-two{gap:7px}}
 @media(prefers-reduced-motion:reduce){.co-toggle i,.co-toggle i:after{transition:none}}
+
+
+/* Language control available even when checkout fully covers the storefront. */
+.co-lang-switch{display:flex;align-items:center;gap:1px;margin-left:auto;background:#191C22;border:1px solid rgba(255,255,255,.13);border-radius:9px;padding:3px;flex-shrink:0}
+.co-lang-switch button{font:750 10px/1 -apple-system,BlinkMacSystemFont,system-ui,sans-serif;min-width:33px;height:34px;padding:0 4px;border-radius:6px;background:transparent;color:#9299A6}
+.co-lang-switch button.active{background:#E8C582;color:#15171A}
+.co-lang-switch button:focus-visible{outline:2px solid #E8C582;outline-offset:2px}
+@media(max-width:470px){.co-top{gap:9px;padding:10px 13px}.co-demo-tag{display:none}.co-lang-switch{margin-left:auto}}
+@media(max-width:355px){.co-lang-switch button{min-width:29px;padding:0 2px;font-size:9px}.co-top>div:nth-child(2) strong{font-size:13px}.co-top>div:nth-child(2) small{font-size:10px}}
