@@ -88,7 +88,11 @@ export const I18N={uk,ru,en};
 export function getInitialLang(){
  try{
    const query=new URLSearchParams(window.location.search).get('lang')?.toLowerCase();
-   if(SUPPORTED_LANGS.includes(query)) return query;
+   if(SUPPORTED_LANGS.includes(query)){
+     // Telegram bot /start selection must also persist for future menu launches.
+     try{window.localStorage.setItem('fleur_lang',query)}catch{}
+     return query;
+   }
    const saved=window.localStorage.getItem('fleur_lang');
    if(SUPPORTED_LANGS.includes(saved)) return saved;
  }catch{}
