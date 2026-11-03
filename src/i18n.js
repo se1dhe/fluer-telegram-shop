@@ -6,6 +6,7 @@ export const LANG_FLAGS={uk:'🇺🇦',ru:'🇷🇺',en:'🇬🇧'};
 export const LANG_NAMES={uk:'Українська',ru:'Русский',en:'English'};
 export const DATE_LOCALES={uk:'uk-UA',ru:'ru-RU',en:'en-GB'};
 const uk={
+'pay.mono':'monobank','pay.privat':'ПриватБанк · LiqPay','pay.apple':'Apple Pay','pay.google':'Google Pay',
 'city':'Дніпро','currency':'₴','demo':'Демо','openCart':'Відкрити кошик',
 'nav.home':'Головна','nav.catalog':'Каталог','nav.favs':'Улюблене','nav.orders':'Замовлення','nav.profile':'Профіль',
 'home.eyebrow':'FLEUR · ПРИВАТНА КОЛЕКЦІЯ','home.h1a':'Квіти.','home.h1b':'Емоції.','home.h1c':'Моменти.','home.subtitle':'Ваші справжні букети. У новому світлі.','home.choose':'Обрати букет','home.delivery':'Доставка по Дніпру','home.gift':'Листівка до букета','home.featured':'FLEUR / CURATED COLLECTION','home.title':'Колекція букетів','home.all':'Усі','home.note':'FLEUR · Букети з реальних фото · ціни демонстраційні. Справжні замовлення та оплата недоступні.',
@@ -33,6 +34,7 @@ const uk={
 'product.rose.name':'Бордова симфонія','product.rose.tag':'Вибір флориста','product.rose.desc':'Білі й бордові хризантеми','product.peony.name':'Лаймовий акцент','product.peony.tag':'Особливий','product.peony.desc':'Білі хризантеми · лаймове пакування','product.tulip.name':'Кольорова історія','product.tulip.tag':'Новинка','product.tulip.desc':'Різнокольорові хризантеми','product.lilac.name':'Червоне зізнання','product.lilac.tag':'Популярний','product.lilac.desc':'Червоні троянди · рожеве пакування','product.ivory.name':'Ніжна розкіш','product.ivory.tag':'Premium','product.ivory.desc':'Кремово-лаймові троянди','product.redcream.name':'Тиха пристрасть','product.redcream.tag':'Premium','product.redcream.desc':'Червоні троянди · кремове пакування','product.fuchsia.name':'Рожева мрія','product.fuchsia.tag':'Бестселер','product.fuchsia.desc':'Малиново-рожеві троянди','product.eustoma.name':'Ранкова ніжність','product.eustoma.tag':'Ніжний','product.eustoma.desc':'Рожеві еустоми · білі пелюстки'
 };
 const ru={
+'pay.mono':'monobank','pay.privat':'ПриватБанк · LiqPay','pay.apple':'Apple Pay','pay.google':'Google Pay',
 'city':'Днепр','currency':'₴','demo':'Демо','openCart':'Открыть корзину',
 'nav.home':'Главная','nav.catalog':'Каталог','nav.favs':'Избранное','nav.orders':'Заказы','nav.profile':'Профиль',
 'home.eyebrow':'FLEUR · ЧАСТНАЯ КОЛЛЕКЦИЯ','home.h1a':'Цветы.','home.h1b':'Эмоции.','home.h1c':'Моменты.','home.subtitle':'Ваши настоящие букеты. В новом свете.','home.choose':'Выбрать букет','home.delivery':'Доставка по Днепру','home.gift':'Открытка к букету','home.featured':'FLEUR / ИЗБРАННАЯ КОЛЛЕКЦИЯ','home.title':'Коллекция букетов','home.all':'Все','home.note':'FLEUR · Букеты по реальным фотографиям · демонстрационные цены. Настоящие заказы и оплата недоступны.',
@@ -60,6 +62,7 @@ const ru={
 'product.rose.name':'Бордовая симфония','product.rose.tag':'Выбор флориста','product.rose.desc':'Белые и бордовые хризантемы','product.peony.name':'Лаймовый акцент','product.peony.tag':'Особенный','product.peony.desc':'Белые хризантемы · лаймовая упаковка','product.tulip.name':'Цветочная история','product.tulip.tag':'Новинка','product.tulip.desc':'Разноцветные хризантемы','product.lilac.name':'Красное признание','product.lilac.tag':'Популярный','product.lilac.desc':'Красные розы · розовая упаковка','product.ivory.name':'Нежная роскошь','product.ivory.tag':'Premium','product.ivory.desc':'Кремово-лаймовые розы','product.redcream.name':'Тихая страсть','product.redcream.tag':'Premium','product.redcream.desc':'Красные розы · кремовая упаковка','product.fuchsia.name':'Розовая мечта','product.fuchsia.tag':'Бестселлер','product.fuchsia.desc':'Малиново-розовые розы','product.eustoma.name':'Утренняя нежность','product.eustoma.tag':'Нежный','product.eustoma.desc':'Розовые эустомы · белые лепестки'
 };
 const en={
+'pay.mono':'monobank','pay.privat':'PrivatBank · LiqPay','pay.apple':'Apple Pay','pay.google':'Google Pay',
 'city':'Dnipro','currency':'₴','demo':'Demo','openCart':'Open cart',
 'nav.home':'Home','nav.catalog':'Catalog','nav.favs':'Saved','nav.orders':'Orders','nav.profile':'Profile',
 'home.eyebrow':'FLEUR · PRIVATE COLLECTION','home.h1a':'Flowers.','home.h1b':'Feelings.','home.h1c':'Moments.','home.subtitle':'Real bouquets, in a whole new light.','home.choose':'Explore bouquets','home.delivery':'Delivery across Dnipro','home.gift':'A gift card with every bouquet','home.featured':'FLEUR / CURATED COLLECTION','home.title':'The bouquet edit','home.all':'All','home.note':'FLEUR · Bouquets based on real photography · demo prices. No live orders or payments.',
