@@ -88,7 +88,7 @@ function App(){
 
  return <>
   <header>
-   <button className="logo" onClick={()=>nav('home')}>FLEUR<span> /</span></button>
+   <button className="logo forge-product-brand" onClick={()=>nav('home')} aria-label="FLEUR · BLACKFORGE"><img src="/blackforge/mark.webp" width="36" height="36" alt=""/><span className="forge-product-copy"><strong>FLEUR</strong><small>BY BLACKFORGE</small></span></button>
    <div className="city"><MapPin size={14}/>{tr('city')}</div>
    <LanguageSwitch lang={lang} onChange={changeLanguage}/>
    <button className="iconbutton" aria-label={tr('openCart')} onClick={()=>setCartOpen(true)}><ShoppingBag size={20}/>{totalItems>0&&<em>{totalItems}</em>}</button>

@@ -116,6 +116,13 @@ nav span{font-size:9px;font-weight:700;letter-spacing:.05px}
 @media(prefers-reduced-motion:reduce){button,.photo img{transition:none!important}}
 
 .photo-disclosure{margin:0 0 18px!important;font-size:11px!important;line-height:1.55;color:var(--muted)!important;letter-spacing:.1px}
+/* Общая подпись семейства продуктов BLACKFORGE. */
+header .forge-product-brand{display:flex;align-items:center;gap:8px;min-height:44px;padding:0;letter-spacing:0;text-align:left}
+.forge-product-brand img{display:block;flex:none;border:1px solid var(--line);border-radius:10px;object-fit:contain}
+header .forge-product-copy{display:grid;gap:3px;margin:0;color:var(--text);font-family:Manrope,system-ui,sans-serif;letter-spacing:0}
+.forge-product-copy strong{font-size:14px;letter-spacing:1.5px;line-height:1}
+.forge-product-copy small{font-size:7px;letter-spacing:1.1px;line-height:1;color:var(--accent)}
+@media(max-width:420px){header .city{display:none}header .forge-product-brand{margin-right:auto}}
 @supports(padding:max(0px)){.overlay{padding-bottom:max(170px,env(safe-area-inset-bottom))}}
 
 .release-info{margin:16px 2px 24px;color:var(--muted);font:500 10px/1.8 ui-monospace,SFMono-Regular,monospace;letter-spacing:.4px;overflow-wrap:anywhere;text-align:center}
