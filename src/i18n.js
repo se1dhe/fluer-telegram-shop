@@ -1,7 +1,7 @@
 // FLEUR localization — ?lang -> localStorage -> Ukrainian default.
 import {pl} from './pl.js';
 // Product names, delivery and payment demos intentionally share the same dictionary.
-export const SUPPORTED_LANGS=['uk','ru','en','pl'];
+export const SUPPORTED_LANGS=['uk','pl','en','ru'];
 export const LANG_LABELS={uk:'УКР',ru:'РУС',en:'ENG',pl:'POL'};
 export const LANG_FLAGS={uk:'🇺🇦',ru:'🇷🇺',en:'🇬🇧',pl:'🇵🇱'};
 export const LANG_NAMES={uk:'Українська',ru:'Русский',en:'English',pl:'Polski'};
