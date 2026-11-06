@@ -6,9 +6,9 @@ export const CHOOSE_LANGUAGE='🌐 Wybierz język / Оберіть мову / Ch
 export const languageKeyboard={
  inline_keyboard:[
   [{text:'🇺🇦 Українська',callback_data:'setlang:uk'}],
+  [{text:'🇵🇱 Polski',callback_data:'setlang:pl'}],
   [{text:'🇬🇧 English',callback_data:'setlang:en'}],
-  [{text:'🇷🇺 Русский',callback_data:'setlang:ru'}],
-  [{text:'🇵🇱 Polski',callback_data:'setlang:pl'}]
+  [{text:'🇷🇺 Русский',callback_data:'setlang:ru'}]
  ]
 };
 export const botMessages={
