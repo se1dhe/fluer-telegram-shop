@@ -33,3 +33,23 @@
  .fleur-language-flag{font-size:21px}
  .fleur-language-dropdown .fleur-language-popover{min-width:170px}
 }
+
+/* BLACKFORGE interaction contract: stable 44px targets, safe-area, no inherited header layout. */
+.co-top>.fleur-language-dropdown,
+header>.fleur-language-dropdown{
+  display:block;position:relative;flex:0 0 auto;min-width:0;margin-left:auto;z-index:100;
+}
+.co-top>.fleur-language-dropdown .fleur-language-trigger{
+  display:flex;flex-direction:row;align-items:center;gap:7px;
+  min-width:84px;min-height:44px;max-width:100%;background:#242528;
+  border:1px solid #45464a;color:#f2f3eb;border-radius:12px;
+}
+.co-top>.fleur-language-dropdown .fleur-language-popover,
+header>.fleur-language-dropdown .fleur-language-popover{
+  display:flex;flex-direction:column;gap:3px;position:absolute;right:0;
+  width:max-content;max-width:min(280px,calc(100vw - 24px));z-index:110;
+  background:#242528;border-color:#45464a;border-radius:16px;
+}
+.fleur-language-dropdown .fleur-language-option{min-height:48px;touch-action:manipulation}
+.fleur-language-dropdown .fleur-language-option:focus-visible{outline:2px solid #dbdcdf;outline-offset:-2px}
+@media(prefers-reduced-motion:reduce){.fleur-language-dropdown *{transition:none!important}}
