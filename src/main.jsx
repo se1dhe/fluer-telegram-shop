@@ -2,7 +2,8 @@ import React,{useState,useEffect} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Home,Search,Heart,ShoppingBag,User,ArrowLeft,Plus,Minus,MapPin,Truck,Gift,ChevronRight,ShieldCheck,Check} from 'lucide-react';
 import CheckoutFlow from './CheckoutFlow.jsx';
-import {t,getInitialLang,persistLang,LANG_FLAGS,LANG_NAMES,SUPPORTED_LANGS,money,dateTime} from './i18n.js';
+import LanguageDropdown from './LanguageDropdown.jsx';
+import {t,getInitialLang,persistLang,SUPPORTED_LANGS,money,dateTime} from './i18n.js';
 import './style.css';
 
 const tg=window.Telegram?.WebApp;
@@ -23,12 +24,6 @@ const tabs=[['home',Home],['catalog',Search],['favs',Heart],['orders',ShoppingBa
 const categoryIDs=['all','roses','chrysanthemums','lisianthus'];
 const getSaved=(key,def)=>{try{const value=JSON.parse(localStorage.getItem(key));return value??def}catch{return def}};
 const save=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value))}catch{}};
-
-function LanguageSwitch({lang,onChange,compact=false}){
- return <div className={'fleur-lang-switch'+(compact?' fleur-lang-switch-compact':'')} role="group" aria-label="Language / Мова / Язык">
-  {SUPPORTED_LANGS.map(code=><button key={code} type="button" lang={code} title={LANG_NAMES[code]} aria-label={LANG_NAMES[code]} aria-pressed={lang===code} className={lang===code?'active':''} onClick={()=>onChange(code)}><span aria-hidden="true">{LANG_FLAGS[code]}</span></button>)}
- </div>;
-}
 
 function App(){
  const[lang,setLang]=useState(getInitialLang);
@@ -90,7 +85,7 @@ function App(){
   <header>
    <button className="logo forge-product-brand" onClick={()=>nav('home')} aria-label="FLEUR · BLACKFORGE"><img src="/blackforge/mark.webp" width="36" height="36" alt=""/><span className="forge-product-copy"><strong>FLEUR</strong><small>BY BLACKFORGE</small></span></button>
    <div className="city"><MapPin size={14}/>{tr('city')}</div>
-   <LanguageSwitch lang={lang} onChange={changeLanguage}/>
+   <LanguageDropdown lang={lang} onChange={changeLanguage}/>
    <button className="iconbutton" aria-label={tr('openCart')} onClick={()=>setCartOpen(true)}><ShoppingBag size={20}/>{totalItems>0&&<em>{totalItems}</em>}</button>
   </header>
   <main>
