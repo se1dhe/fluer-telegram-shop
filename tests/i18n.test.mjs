@@ -7,11 +7,11 @@ const source=[
 readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8'),
 readFileSync(new URL('../src/CheckoutFlow.jsx',import.meta.url),'utf8')
 ].join('\n');
-test('supported languages match beauty TMA locale options',()=>{
- assert.deepEqual(SUPPORTED_LANGS,['uk','ru','en']);
+test('all four supported languages have labels, locales, and flags',()=>{
+ assert.deepEqual(SUPPORTED_LANGS,['uk','ru','en','pl']);
  for(const lang of SUPPORTED_LANGS){assert.ok(LANG_LABELS[lang]);assert.ok(DATE_LOCALES[lang])}
 });
-test('all three dictionaries have identical non-empty keys and interpolations',()=>{
+test('all four dictionaries have identical non-empty keys and interpolations',()=>{
  for(const lang of SUPPORTED_LANGS){
   assert.deepEqual(Object.keys(I18N[lang]).sort(),keys,lang+' key mismatch');
   for(const key of keys){
@@ -32,9 +32,12 @@ test('all literal translation calls in components are implemented',()=>{
 });
 test('locale text, placeholders and currencies render correctly',()=>{
  assert.equal(t('en','nav.profile'),'Profile');
+ assert.equal(t('pl','nav.profile'),'Profil');
+ assert.equal(t('pl','checkout.stepCount',{step:2}),'Krok 2 z 4');
  assert.equal(t('ru','cart.addLabel',{name:'Розовая мечта'}),'Добавить Розовая мечта в корзину');
  assert.equal(t('uk','orders.test',{id:'DEMO-A'}),'Тестове замовлення #DEMO-A');
  assert.equal(t('en','cart.count',{count:2}),'2 pcs');
  assert.match(money(2450,'en'),/2,450 ₴/);
+ assert.match(money(2450,'pl'),/2\\s?450 ₴/);
  assert.equal(t('invalid','nav.home'),I18N.uk['nav.home']);
 });
