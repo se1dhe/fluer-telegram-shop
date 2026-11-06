@@ -3,10 +3,12 @@ import {createRoot} from 'react-dom/client';
 import {Home,Search,Heart,ShoppingBag,User,ArrowLeft,Plus,Minus,MapPin,Truck,Gift,ChevronRight,ShieldCheck,Check} from 'lucide-react';
 import CheckoutFlow from './CheckoutFlow.jsx';
 import LanguageDropdown from './LanguageDropdown.jsx';
+import {installFleurHaptics,fleurHaptic} from './haptics.js';
 import {t,getInitialLang,persistLang,SUPPORTED_LANGS,money,dateTime} from './i18n.js';
 import './style.css';
 
 const tg=window.Telegram?.WebApp;
+installFleurHaptics();
 
 // A single delegated listener covers catalogue, navigation, cart and checkout.
 // Telegram's haptic API is optional; browsers remain silent without it.
@@ -155,7 +157,7 @@ function App(){
    </div>
    {totalItems>0&&<div className="actionbar"><div>{tr('cart.subtotal')} <b>{format(subtotal)}</b></div><small>{tr('cart.delivery')}</small><button className="primary" onClick={()=>{setCartOpen(false);setCheckout(true)}}>{tr('cart.checkout')} <ChevronRight/></button></div>}
   </div>}
-  {checkout&&<CheckoutFlow lang={lang} onLanguageChange={changeLanguage} sum={subtotal} cart={cart} products={products} tg={tg} onCancel={()=>{setCheckout(false);setCartOpen(true)}} onComplete={order=>{setOrders(prev=>[order,...prev]);setCart({});setCheckout(false);setTab('orders');setToast('saved')}}/>}
+  {checkout&&<CheckoutFlow lang={lang} onLanguageChange={changeLanguage} sum={subtotal} cart={cart} products={products} tg={tg} onCancel={()=>{setCheckout(false);setCartOpen(true)}} onComplete={order=>{setOrders(prev=>[order,...prev]);setCart({});setCheckout(false);setTab('orders');setToast('saved');fleurHaptic('success')}}/>}
  </>;
 }
 createRoot(document.getElementById('root')).render(<App/>);
