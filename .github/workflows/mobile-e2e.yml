@@ -3,22 +3,44 @@ on:
   push:
     branches: [main]
     paths:
+      - 'src/**'
       - 'tests/**'
+      - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/mobile-e2e.yml'
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
   mobile-e2e:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     env:
-      BASE_URL: https://fluer-telegram-shop.vercel.app
+      BASE_URL: http://127.0.0.1:4173
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies and build
+        run: |
+          npm ci
+          npm run build
       - name: Install browser test tooling
-        run: npm install --no-save @playwright/test@1.56.1
-      - name: Install headless Chromium
-        run: npx playwright install --with-deps chromium
-      - name: Run mobile shop E2E
+        run: |
+          npm install --no-save @playwright/test@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Start production preview
+        run: |
+          npm run preview -- --host 127.0.0.1 > /tmp/fleur-preview.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS "$BASE_URL/" >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/fleur-preview.log
+          exit 1
+      - name: Run mobile checkout E2E
         run: npx playwright test tests/checkout.spec.mjs --reporter=line --workers=1
