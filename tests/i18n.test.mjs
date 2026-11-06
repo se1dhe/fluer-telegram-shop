@@ -8,7 +8,7 @@ readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8'),
 readFileSync(new URL('../src/CheckoutFlow.jsx',import.meta.url),'utf8')
 ].join('\n');
 test('all four supported languages have labels, locales, and flags',()=>{
- assert.deepEqual(SUPPORTED_LANGS,['uk','ru','en','pl']);
+ assert.deepEqual(SUPPORTED_LANGS,['uk','pl','en','ru']);
  for(const lang of SUPPORTED_LANGS){assert.ok(LANG_LABELS[lang]);assert.ok(DATE_LOCALES[lang])}
 });
 test('all four dictionaries have identical non-empty keys and interpolations',()=>{
