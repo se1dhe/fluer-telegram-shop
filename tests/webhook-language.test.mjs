@@ -24,7 +24,7 @@ const pick=(lang)=>({
  }
 });
 
-test('/start always offers three distinct inline language buttons regardless of user Telegram language',async()=>{
+test('/start always offers four distinct inline language buttons regardless of user Telegram language',async()=>{
  const {api,calls}=commands();
  for(const message of [
   {message:{chat:{id:12345,type:'private'},from:{language_code:'en'},text:'/start'}},
@@ -40,13 +40,13 @@ test('/start always offers three distinct inline language buttons regardless of 
   assert.deepEqual(payload.reply_markup,languageKeyboard);
   assert.deepEqual(
    payload.reply_markup.inline_keyboard.map(row=>row[0].callback_data),
-   ['setlang:uk','setlang:en','setlang:ru']
+   ['setlang:uk','setlang:en','setlang:ru','setlang:pl']
   );
  }
 });
 
 test('each selected language returns a localized menu, preserved query and per-chat menu button',async()=>{
- for(const lang of ['uk','en','ru']){
+ for(const lang of ['uk','en','ru','pl']){
   const {api,calls}=commands();
   const result=await handleBotUpdate(pick(lang),api,appUrl);
   assert.deepEqual(result,{handled:true,type:'language_selected',lang,menuConfigured:true});
@@ -71,7 +71,7 @@ test('each selected language returns a localized menu, preserved query and per-c
 
 test('unsupported callbacks are acknowledged without choosing a language',async()=>{
  const {api,calls}=commands();
- const result=await handleBotUpdate(pick('pl'),api,appUrl);
+ const result=await handleBotUpdate(pick('invalid'),api,appUrl);
  assert.equal(result.type,'invalid_language');
  assert.deepEqual(calls.map(x=>x.method),['answerCallbackQuery']);
 });
@@ -97,7 +97,7 @@ test('a menu-button API failure cannot prevent the localized welcome from reachi
 test('invalid URL never yields an insecure web_app button',async()=>{
  assert.equal(appUrlForLanguage('http://unsecured.example','en'),null);
  assert.equal(appUrlForLanguage('invalid address','en'),null);
- assert.equal(appUrlForLanguage(appUrl,'pl'),null);
+ assert.equal(appUrlForLanguage(appUrl,'invalid'),null);
  const {api,calls}=commands();
  await handleBotUpdate(pick('en'),api,'http://unsecured.example');
  assert.equal(calls[1].payload.reply_markup,undefined);
@@ -114,8 +114,11 @@ test('the bot-selected deep-link language is stored for later direct WebApp laun
  try{
   assert.equal(getInitialLang(),'en');
   assert.equal(state.get('fleur_lang'),'en');
+  globalThis.window.location.search='?lang=pl';
+  assert.equal(getInitialLang(),'pl');
+  assert.equal(state.get('fleur_lang'),'pl');
   globalThis.window.location.search='';
-  assert.equal(getInitialLang(),'en');
+  assert.equal(getInitialLang(),'pl');
  }finally{
   if(original===undefined)delete globalThis.window;
   else globalThis.window=original;
