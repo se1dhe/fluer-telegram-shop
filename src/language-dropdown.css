@@ -1,0 +1,35 @@
+/* Language dropdown: a compact trigger and full-size flag options. */
+.fleur-language-dropdown{position:relative;display:block;flex:0 0 auto;margin-left:auto;z-index:12}
+.fleur-language-dropdown .fleur-language-trigger{
+ display:flex;align-items:center;justify-content:center;gap:6px;min-width:85px;
+ height:44px;padding:0 11px;border:1px solid rgba(255,255,255,.16);
+ border-radius:11px;color:#f6f4ee;background:#191c22;white-space:nowrap;
+ font:750 11px/1 Manrope,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+ letter-spacing:.4px;cursor:pointer;
+}
+.fleur-language-flag{font:normal 23px/1 "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;display:inline-flex;align-items:center}
+.fleur-language-trigger svg{color:#E8C582;transition:transform .18s ease}
+.fleur-language-trigger svg.rotate{transform:rotate(180deg)}
+.fleur-language-dropdown .fleur-language-popover{
+ position:absolute;top:calc(100% + 7px);right:0;z-index:50;min-width:180px;
+ padding:6px;display:flex;flex-direction:column;gap:2px;
+ border-radius:12px;background:#191c22;border:1px solid rgba(232,197,130,.26);
+ box-shadow:0 16px 38px rgba(0,0,0,.55);
+}
+.fleur-language-dropdown .fleur-language-option{
+ display:flex;align-items:center;gap:11px;width:100%;min-height:45px;text-align:left;
+ border-radius:8px;padding:7px 10px;color:#eef0f3;background:transparent;
+ font:600 13px/1.3 Manrope,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;letter-spacing:0;cursor:pointer;
+}
+.fleur-language-option .fleur-language-flag{font-size:22px}
+.fleur-language-option svg{margin-left:auto;color:#e8c582}
+.fleur-language-dropdown .fleur-language-option.selected{background:rgba(232,197,130,.14);color:#e8c582}
+.fleur-language-dropdown .fleur-language-option:active{background:rgba(232,197,130,.2)}
+.fleur-language-dropdown button:focus-visible{outline:2px solid #e8c582;outline-offset:2px}
+.co-top>.fleur-language-dropdown{display:block;flex:0 0 auto;margin-left:auto;z-index:12;min-width:0}
+.co-top>.fleur-language-dropdown .fleur-language-trigger{min-width:80px}
+@media(max-width:360px){
+ .fleur-language-dropdown .fleur-language-trigger{min-width:73px;padding:0 7px;gap:4px}
+ .fleur-language-flag{font-size:21px}
+ .fleur-language-dropdown .fleur-language-popover{min-width:170px}
+}
