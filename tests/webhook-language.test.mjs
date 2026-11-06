@@ -40,7 +40,7 @@ test('/start always offers four distinct inline language buttons regardless of u
   assert.deepEqual(payload.reply_markup,languageKeyboard);
   assert.deepEqual(
    payload.reply_markup.inline_keyboard.map(row=>row[0].callback_data),
-   ['setlang:uk','setlang:en','setlang:ru','setlang:pl']
+   ['setlang:uk','setlang:pl','setlang:en','setlang:ru']
   );
  }
 });
