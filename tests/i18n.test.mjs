@@ -38,6 +38,6 @@ test('locale text, placeholders and currencies render correctly',()=>{
  assert.equal(t('uk','orders.test',{id:'DEMO-A'}),'Тестове замовлення #DEMO-A');
  assert.equal(t('en','cart.count',{count:2}),'2 pcs');
  assert.match(money(2450,'en'),/2,450 ₴/);
- assert.match(money(2450,'pl'),/2\\s?450 ₴/);
+ assert.equal(money(2450,'pl'),'2450 ₴');
  assert.equal(t('invalid','nav.home'),I18N.uk['nav.home']);
 });
