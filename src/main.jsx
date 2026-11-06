@@ -7,6 +7,23 @@ import {t,getInitialLang,persistLang,SUPPORTED_LANGS,money,dateTime} from './i18
 import './style.css';
 
 const tg=window.Telegram?.WebApp;
+
+// A single delegated listener covers catalogue, navigation, cart and checkout.
+// Telegram's haptic API is optional; browsers remain silent without it.
+function fleurHaptic(kind='selection'){
+ try{
+  if(!tg?.HapticFeedback || !tg.isVersionAtLeast?.('6.1'))return;
+  if(['success','error','warning'].includes(kind))tg.HapticFeedback.notificationOccurred(kind);
+  else if(kind==='impact')tg.HapticFeedback.impactOccurred('light');
+  else tg.HapticFeedback.selectionChanged();
+ }catch{}
+}
+document.addEventListener('pointerup',event=>{
+ const control=event.target.closest?.('button,[role="button"],[role="tab"],select,input[type="checkbox"],input[type="radio"]');
+ if(!control || control.disabled || control.getAttribute('aria-disabled')==='true')return;
+ fleurHaptic();
+},{passive:true});
+
 try{tg?.ready();tg?.expand();tg?.setHeaderColor?.('#101216');tg?.setBackgroundColor?.('#101216')}catch{}
 
 const rawProducts=[
