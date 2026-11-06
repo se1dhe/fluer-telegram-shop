@@ -1,10 +1,11 @@
-// FLEUR localization — follows beauty-booking-bot's ?lang -> localStorage -> uk preference.
+// FLEUR localization — ?lang -> localStorage -> Ukrainian default.
+import {pl} from './pl.js';
 // Product names, delivery and payment demos intentionally share the same dictionary.
-export const SUPPORTED_LANGS=['uk','ru','en'];
-export const LANG_LABELS={uk:'УКР',ru:'РУС',en:'ENG'};
-export const LANG_FLAGS={uk:'🇺🇦',ru:'🇷🇺',en:'🇬🇧'};
-export const LANG_NAMES={uk:'Українська',ru:'Русский',en:'English'};
-export const DATE_LOCALES={uk:'uk-UA',ru:'ru-RU',en:'en-GB'};
+export const SUPPORTED_LANGS=['uk','ru','en','pl'];
+export const LANG_LABELS={uk:'УКР',ru:'РУС',en:'ENG',pl:'POL'};
+export const LANG_FLAGS={uk:'🇺🇦',ru:'🇷🇺',en:'🇬🇧',pl:'🇵🇱'};
+export const LANG_NAMES={uk:'Українська',ru:'Русский',en:'English',pl:'Polski'};
+export const DATE_LOCALES={uk:'uk-UA',ru:'ru-RU',en:'en-GB',pl:'pl-PL'};
 const uk={
 'pay.mono':'monobank','pay.privat':'ПриватБанк · LiqPay','pay.apple':'Apple Pay','pay.google':'Google Pay',
 'city':'Дніпро','currency':'₴','demo':'Демо','openCart':'Відкрити кошик',
@@ -89,7 +90,7 @@ const en={
 'checkout.errContact':'Enter your name and a valid phone number.','checkout.errRecipient':'Enter the recipient’s name and phone number.','checkout.errAddress':'Enter a town, street and building.','checkout.errDate':'Choose a delivery date no earlier than today.',
 'product.rose.name':'Burgundy Symphony','product.rose.tag':'Florist’s choice','product.rose.desc':'White & burgundy chrysanthemums','product.peony.name':'Lime Accent','product.peony.tag':'Special selection','product.peony.desc':'White chrysanthemums · lime wrapping','product.tulip.name':'Color Story','product.tulip.tag':'New','product.tulip.desc':'Colorful chrysanthemums','product.lilac.name':'Scarlet Confession','product.lilac.tag':'Popular','product.lilac.desc':'Red roses · pink wrapping','product.ivory.name':'Gentle Luxury','product.ivory.tag':'Premium','product.ivory.desc':'Ivory and pale-lime roses','product.redcream.name':'Quiet Passion','product.redcream.tag':'Premium','product.redcream.desc':'Red roses · cream wrapping','product.fuchsia.name':'Pink Dream','product.fuchsia.tag':'Bestseller','product.fuchsia.desc':'Fuchsia-pink roses','product.eustoma.name':'Morning Tenderness','product.eustoma.tag':'Delicate','product.eustoma.desc':'Pink lisianthus · soft white petals'
 };
-export const I18N={uk,ru,en};
+export const I18N={uk,ru,en,pl};
 export function getInitialLang(){
  try{
    const query=new URLSearchParams(window.location.search).get('lang')?.toLowerCase();
