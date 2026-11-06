@@ -2,20 +2,22 @@ import {telegram,requireMethod} from './_lib.js';
 
 // Mirrors beauty-booking-bot/client.py: /start always asks, setlang:xx unlocks the menu.
 // Keeping the chosen language on the per-chat Telegram menu works without a database.
-export const CHOOSE_LANGUAGE='🌐 Оберіть мову / Choose language / Выберите язык';
+export const CHOOSE_LANGUAGE='🌐 Wybierz język / Оберіть мову / Choose language / Выберите язык';
 export const languageKeyboard={
  inline_keyboard:[
   [{text:'🇺🇦 Українська',callback_data:'setlang:uk'}],
   [{text:'🇬🇧 English',callback_data:'setlang:en'}],
-  [{text:'🇷🇺 Русский',callback_data:'setlang:ru'}]
+  [{text:'🇷🇺 Русский',callback_data:'setlang:ru'}],
+  [{text:'🇵🇱 Polski',callback_data:'setlang:pl'}]
  ]
 };
 export const botMessages={
  uk:{button:'🌷 Відкрити FLEUR',welcome:'Вітаємо у FLEUR! 🌷\nОберіть букет для подарунка. Це демонстраційний магазин — реальні замовлення та оплата недоступні.',selected:'✅ Мова: Українська'},
  en:{button:'🌷 Open FLEUR',welcome:'Welcome to FLEUR! 🌷\nChoose a beautiful bouquet as a gift. This is a demo shop — live orders and payments are disabled.',selected:'✅ Language: English'},
- ru:{button:'🌷 Открыть FLEUR',welcome:'Добро пожаловать в FLEUR! 🌷\nВыберите букет для подарка. Это демонстрационный магазин — настоящие заказы и платежи недоступны.',selected:'✅ Язык: Русский'}
+ ru:{button:'🌷 Открыть FLEUR',welcome:'Добро пожаловать в FLEUR! 🌷\nВыберите букет для подарка. Это демонстрационный магазин — настоящие заказы и платежи недоступны.',selected:'✅ Язык: Русский'},
+ pl:{button:'🌷 Otwórz FLEUR',welcome:'Witamy we FLEUR! 🌷\nWybierz bukiet na wyjątkową okazję. To sklep demonstracyjny — prawdziwe zamówienia i płatności są wyłączone.',selected:'✅ Język: Polski'}
 };
-const supported=new Set(['uk','ru','en']);
+const supported=new Set(['uk','ru','en','pl']);
 export function botLanguage(code){
  const lang=typeof code==='string'?code.toLowerCase().split(/[-_]/)[0]:'';
  return supported.has(lang)?lang:'uk';
