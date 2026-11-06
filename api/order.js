@@ -11,14 +11,15 @@ export default async function handler(req,res){
  const body=req.body||{}, customer=body.customer||{}, entries=Object.entries(body.items||{});
  if(!entries.length||entries.length>4)return res.status(400).json({error:'invalid_cart'});
  let subtotal=0;
- for(const [id,quantity] of entries){if(!(id in prices)||!Number.isInteger(quantity)||quantity<1||quantity>20)return res.status(400).json({error:'invalid_items'});subtotal+=prices[id]*quantity}
+ for(const [id,quantity] of entries){if(!Object.hasOwn(prices,id)||!Number.isInteger(quantity)||quantity<1||quantity>20)return res.status(400).json({error:'invalid_items'});subtotal+=prices[id]*quantity}
  for(const k of ['name','phone','recipient','recipientPhone','destination','date'])if(!clean(customer[k]))return res.status(400).json({error:'missing_'+k});
  if(!/^\d{4}-\d{2}-\d{2}$/.test(customer.date))return res.status(400).json({error:'invalid_date'});
  const [year,month,day]=customer.date.split('-').map(Number);
  const date=new Date(Date.UTC(year,month-1,day));
  if(date.getUTCFullYear()!==year||date.getUTCMonth()+1!==month||date.getUTCDate()!==day)
   return res.status(400).json({error:'invalid_date'});
- const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Kyiv',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+ const dateParts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Kyiv',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).map(part=>[part.type,part.value]));
+ const today=dateParts.year+'-'+dateParts.month+'-'+dateParts.day;
  if(customer.date<today)return res.status(400).json({error:'past_date'});
  const id=crypto.randomBytes(5).toString('hex').toUpperCase();
  const message=['🌷 FLEUR / ТЕСТОВЕ ЗАМОВЛЕННЯ #'+id,'Telegram ID: '+user.id,'Замовник: '+clean(customer.name),'Телефон: '+clean(customer.phone),'Отримувач: '+clean(customer.recipient),'Телефон отримувача: '+clean(customer.recipientPhone),'Адреса: '+clean(customer.destination,220),'Зона: '+(body.outCity?'За містом':'Дніпро'),'Дата: '+customer.date,'Час: '+clean(customer.time),'Листівка: '+clean(customer.card,320),'Анонімно: '+(customer.anonymous?'так':'ні'),'Товари: '+entries.map(([id,n])=>id+' × '+n).join(', '),'Товари: '+subtotal+' ₴','Доставку узгодити окремо','⚠️ ДЕМО: НЕ ПРИЙМАТИ ОПЛАТУ'].join('\n');
