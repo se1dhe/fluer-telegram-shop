@@ -58,6 +58,17 @@ export default function CheckoutFlow({sum,cart,products,tg,lang,onLanguageChange
  const next=()=>{const issue=validate();if(issue){setError(issue);try{tg?.HapticFeedback?.notificationOccurred?.('error')}catch{}return}setStep(prev=>Math.min(4,prev+1))};
  const back=()=>{if(paymentOpen){setPaymentOpen(false);return}if(step===1){onCancel();return}setStep(prev=>prev-1)};
  useEffect(()=>{const handler=()=>back();try{tg?.BackButton?.show();tg?.BackButton?.onClick(handler)}catch{}return()=>{try{tg?.BackButton?.offClick(handler)}catch{}}},[step,paymentOpen,tg,onCancel]);
+ useEffect(()=>{
+  if(!paymentOpen)return;
+  const previousOverflow=document.body.style.overflow;
+  document.body.style.overflow='hidden';
+  const onKeyDown=event=>{
+   if(event.key==='Escape'){event.preventDefault();setPaymentOpen(false);}
+  };
+  document.addEventListener('keydown',onKeyDown);
+  return()=>{document.body.style.overflow=previousOverflow;document.removeEventListener('keydown',onKeyDown)};
+ },[paymentOpen]);
+
  const submitDemo=()=>{
   if(complete)return;
   setComplete(true);
