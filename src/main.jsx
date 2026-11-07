@@ -44,8 +44,8 @@ function App(){
 
  const tr=(key,vars)=>t(lang,key,vars);
  const products=rawProducts.map(p=>({...p,name:tr('product.'+p.id+'.name'),tag:tr('product.'+p.id+'.tag'),desc:tr('product.'+p.id+'.desc'),img:'/catalog/'+p.slug+'.webp',real:'/catalog/'+p.slug+'-real.webp'}));
- const totalItems=Object.values(cart).reduce((sum,q)=>sum+(Number.isInteger(q)?q:0),0);
- const subtotal=products.reduce((sum,p)=>sum+(cart[p.id]||0)*p.price,0);
+ const totalItems=rawProducts.reduce((sum,p)=>sum+(Number.isInteger(cart[p.id])&&cart[p.id]>0?Math.min(20,cart[p.id]):0),0);
+ const subtotal=products.reduce((sum,p)=>sum+(Number.isInteger(cart[p.id])&&cart[p.id]>0?Math.min(20,cart[p.id]):0)*p.price,0);
  const format=n=>money(n,lang);
  const changeLanguage=code=>{if(!SUPPORTED_LANGS.includes(code)||code===lang)return;setLang(code);persistLang(code);try{tg?.HapticFeedback?.selectionChanged?.()}catch{}};
  const toastText=toast==='saved'?tr('cart.saved'):toast?tr('cart.toast',{name:products.find(p=>p.id===toast)?.name||tr('cart.added')}):'';
@@ -57,11 +57,12 @@ function App(){
  useEffect(()=>{if(!toast)return;const timeout=setTimeout(()=>setToast(''),2800);return()=>clearTimeout(timeout)},[toast]);
 
  const nav=next=>{setTab(next);setDetail(null);setCartOpen(false);setCheckout(false)};
- const back=()=>{if(checkout){setCheckout(false);setCartOpen(true)}else if(cartOpen)setCartOpen(false);else if(detail)setDetail(null);else nav('home')};
+ const back=()=>{if(cartOpen)setCartOpen(false);else if(detail)setDetail(null);else nav('home')};
  useEffect(()=>{
   try{
    tg?.BackButton?.offClick(back);
-   if(checkout||cartOpen||detail||tab!=='home'){
+   if(checkout){tg?.BackButton?.show();return}
+   if(cartOpen||detail||tab!=='home'){
     tg?.BackButton?.show();
     tg?.BackButton?.onClick(back);
    }else tg?.BackButton?.hide();
