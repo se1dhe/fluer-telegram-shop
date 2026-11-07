@@ -57,9 +57,15 @@ function App(){
  useEffect(()=>{if(!toast)return;const timeout=setTimeout(()=>setToast(''),2800);return()=>clearTimeout(timeout)},[toast]);
 
  const nav=next=>{setTab(next);setDetail(null);setCartOpen(false);setCheckout(false)};
- const back=()=>{if(cartOpen)setCartOpen(false);else if(detail)setDetail(null);else nav('home')};
+ const back=()=>{if(checkout){setCheckout(false);setCartOpen(true)}else if(cartOpen)setCartOpen(false);else if(detail)setDetail(null);else nav('home')};
  useEffect(()=>{
-  try{if(checkout)tg?.BackButton?.show();else if(cartOpen||detail||tab!=='home'){tg?.BackButton?.show();tg?.BackButton?.onClick(back)}else tg?.BackButton?.hide()}catch{}
+  try{
+   tg?.BackButton?.offClick(back);
+   if(checkout||cartOpen||detail||tab!=='home'){
+    tg?.BackButton?.show();
+    tg?.BackButton?.onClick(back);
+   }else tg?.BackButton?.hide();
+  }catch{}
   return()=>{try{tg?.BackButton?.offClick(back)}catch{}};
  },[checkout,cartOpen,detail,tab]);
 
