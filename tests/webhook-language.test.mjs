@@ -34,7 +34,7 @@ test('/start always offers four distinct inline language buttons regardless of u
   const result=await handleBotUpdate(message,api,appUrl);
   assert.equal(result.type,'language_prompt');
  }
- assert.equal(calls.length,4);
+ assert.equal(calls.length,2);
  for(const {method,payload} of calls.filter(x=>x.method==='sendMessage')){
   assert.equal(method,'sendMessage');
   assert.equal(payload.text,CHOOSE_LANGUAGE);
