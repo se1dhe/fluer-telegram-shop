@@ -1,7 +1,7 @@
 import {telegram,requireMethod} from './_lib.js';
 
-// Mirrors beauty-booking-bot/client.py: /start always asks, setlang:xx unlocks the menu.
-// Keeping the chosen language on the per-chat Telegram menu works without a database.
+// Persist the language in Telegram's per-chat menu. On subsequent /start calls,
+// recover it through getChatMenuButton instead of asking again.
 export const CHOOSE_LANGUAGE='🌐 Wybierz język / Оберіть мову / Choose language / Выберите язык';
 export const languageKeyboard={
  inline_keyboard:[
@@ -34,9 +34,35 @@ export function appUrlForLanguage(publicUrl,lang){
 
 // Telegram delivers these updates to /api/webhook, authenticated by secret header.
 // Injection of the API caller keeps all bot flows testable without sending real messages.
+export function languageFromChatMenu(menu,publicAppUrl){
+ if(menu?.type!=='web_app'||!menu.web_app?.url||!publicAppUrl)return null;
+ try{
+  const current=new URL(menu.web_app.url);
+  const expected=new URL(publicAppUrl);
+  if(current.origin!==expected.origin||current.pathname!==expected.pathname)return null;
+  const code=current.searchParams.get('lang');
+  return supported.has(code)?code:null;
+ }catch{return null}
+}
 export async function handleBotUpdate(update,api=telegram,publicAppUrl=process.env.PUBLIC_APP_URL){
  const msg=update?.message;
  if(typeof msg?.text==='string'&&/^\/start(?:@[A-Za-z0-9_]+)?(?:\s|$)/.test(msg.text)){
+  if(msg.chat.type==='private'&&String(msg.chat.id)===String(msg.from?.id)){
+   try{
+    const response=await api('getChatMenuButton',{chat_id:msg.chat.id});
+    const saved=languageFromChatMenu(response?.result,publicAppUrl);
+    if(saved){
+     const copy=botMessages[saved];
+     const appUrl=appUrlForLanguage(publicAppUrl,saved);
+     await api('sendMessage',{
+      chat_id:msg.chat.id,
+      text:copy.welcome,
+      reply_markup:{inline_keyboard:[[{text:copy.button,web_app:{url:appUrl}}]]}
+     });
+     return {handled:true,type:'returning_user',lang:saved};
+    }
+   }catch(error){console.error('telegram_get_chat_menu_failed',error?.message)}
+  }
   await api('sendMessage',{
    chat_id:msg.chat.id,
    text:CHOOSE_LANGUAGE,
