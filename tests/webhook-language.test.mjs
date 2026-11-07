@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
- CHOOSE_LANGUAGE,languageKeyboard,botMessages,appUrlForLanguage,handleBotUpdate
+ CHOOSE_LANGUAGE,languageKeyboard,botMessages,appUrlForLanguage,languageFromChatMenu,handleBotUpdate
 } from '../api/webhook.js';
 import {getInitialLang} from '../src/i18n.js';
 
@@ -11,6 +11,7 @@ const commands=(options={})=>{
  const api=async(method,payload)=>{
   calls.push({method,payload});
   if(options.failMenu&&method==='setChatMenuButton')throw Error('temporary Telegram API issue');
+  if(method==='getChatMenuButton')return {ok:true,result:options.savedMenu||{type:'default'}};
   return {ok:true,result:true};
  };
  return {calls,api};
@@ -33,8 +34,8 @@ test('/start always offers four distinct inline language buttons regardless of u
   const result=await handleBotUpdate(message,api,appUrl);
   assert.equal(result.type,'language_prompt');
  }
- assert.equal(calls.length,2);
- for(const {method,payload} of calls){
+ assert.equal(calls.length,4);
+ for(const {method,payload} of calls.filter(x=>x.method==='sendMessage')){
   assert.equal(method,'sendMessage');
   assert.equal(payload.text,CHOOSE_LANGUAGE);
   assert.deepEqual(payload.reply_markup,languageKeyboard);
@@ -123,4 +124,18 @@ test('the bot-selected deep-link language is stored for later direct WebApp laun
   if(original===undefined)delete globalThis.window;
   else globalThis.window=original;
  }
+});
+
+test('returning private user keeps the previous Polish language on /start',async()=>{
+ const savedMenu={type:'web_app',web_app:{url:appUrlForLanguage(appUrl,'pl')}};
+ const {api,calls}=commands({savedMenu});
+ const result=await handleBotUpdate({message:{chat:{id:12345,type:'private'},from:{id:12345},text:'/start'}},api,appUrl);
+ assert.deepEqual(result,{handled:true,type:'returning_user',lang:'pl'});
+ assert.deepEqual(calls.map(x=>x.method),['getChatMenuButton','sendMessage']);
+ assert.equal(calls[1].payload.text,botMessages.pl.welcome);
+ assert.equal(new URL(calls[1].payload.reply_markup.inline_keyboard[0][0].web_app.url).searchParams.get('lang'),'pl');
+});
+test('a forged Telegram menu URL cannot override the user language',()=>{
+ assert.equal(languageFromChatMenu({type:'web_app',web_app:{url:'https://evil.example/?lang=pl'}},appUrl),null);
+ assert.equal(languageFromChatMenu({type:'web_app',web_app:{url:appUrlForLanguage(appUrl,'ru')}},appUrl),'ru');
 });
