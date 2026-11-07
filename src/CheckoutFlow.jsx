@@ -23,13 +23,14 @@ export default function CheckoutFlow({sum,cart,products,tg,lang,onLanguageChange
  const[paymentOpen,setPaymentOpen]=useState(false);
  const[contactStatus,setContactStatus]=useState('');
  const[complete,setComplete]=useState(false);
+ const[dateMin,setDateMin]=useState(today);
  const page=useRef(null);
  const change=(key,value)=>setData(prev=>({...prev,[key]:value}));
  const deliveryFee=data.kind==='courier'?169:data.kind==='pickup'?0:null;
  const total=sum+(deliveryFee??0);
  const selectedPayment=paymentOptions.find(p=>p.id===data.payment)||paymentOptions[0];
 
- useEffect(()=>{page.current?.scrollTo?.({top:0,behavior:'instant'});setError('')},[step]);
+ useEffect(()=>{page.current?.scrollTo?.({top:0,behavior:'instant'});setError('');setDateMin(today())},[step]);
  useEffect(()=>{setData(prev=>{const homeCities=['Дніпро','Днепр','Dnipro'];return homeCities.includes(prev.town)?{...prev,town:t(lang,'city')}:prev})},[lang]);
 
  const input=(key,label,placeholder,opts={})=><label className="co-field"><span>{label}</span><input
@@ -120,7 +121,7 @@ export default function CheckoutFlow({sum,cart,products,tg,lang,onLanguageChange
     {input('recipient',tr('checkout.recipient'),tr('checkout.recipientPlaceholder'),{required:true})}
     {fieldPhone('recipientPhone',tr('checkout.recipientPhone'))}
     <div className="co-two">
-     <label className="co-field"><span>{tr('checkout.date')}</span><input type="date" min={today()} value={data.date} onChange={e=>change('date',e.target.value)}/></label>
+     <label className="co-field"><span>{tr('checkout.date')}</span><input type="date" min={dateMin} value={data.date} onChange={e=>change('date',e.target.value)}/></label>
      <label className="co-field"><span>{tr('checkout.time')}</span><select value={data.slot} onChange={e=>change('slot',e.target.value)}>{slots.map(x=><option key={x}>{x}</option>)}</select></label>
     </div>
     <label className="co-field"><span>{tr('checkout.courierNote')}</span><textarea maxLength={240} rows="3" value={data.courierNote} onChange={e=>change('courierNote',e.target.value)} placeholder={tr('checkout.courierPlaceholder')}/></label>
